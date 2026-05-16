@@ -22,7 +22,7 @@
             --border-color: #dcdde1;
             --success: #2ecc71;
             --danger: #e74c3c;
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 12px rgba(0,0,0,0.05);
             --radius: 8px;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
@@ -175,7 +175,7 @@
 </head>
 <body>
 
-    <!-- OVERLAY DE LOGIN -->
+    <!-- ==================== OVERLAY DE LOGIN ==================== -->
     <div id="login-overlay">
         <div id="login-modal">
             <h2>HoraDo<span style="color:var(--primary);">Mecânico</span></h2>
@@ -209,7 +209,7 @@
         </div>
     </div>
 
-    <!-- HEADER -->
+    <!-- ==================== HEADER ==================== -->
     <header>
         <div class="logo-area" onclick="location.reload()" style="cursor:pointer;">
             <h1>HoraDo<span>Mecânico</span></h1>
@@ -231,7 +231,7 @@
         </div>
     </header>
 
-    <!-- DRAWER REDES SOCIAIS -->
+    <!-- ==================== DRAWER REDES SOCIAIS ==================== -->
     <div id="social-drawer-overlay" onclick="toggleSocialDrawer()"></div>
     <div id="social-drawer">
         <button class="close-drawer" onclick="toggleSocialDrawer()">✕</button>
@@ -246,60 +246,29 @@
         </div>
     </div>
 
-    <!-- PAINEL ADMIN -->
+    <!-- ==================== PAINEL ADMIN ==================== -->
     <div id="admin-overlay">
         <div id="admin-modal">
             <button class="btn-close-admin" onclick="closeAdminPanel()">✕</button>
-            <h3>
-                <svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="currentColor"/><path d="M12 1l9 4v2c0 7-4 12-9 14C7 19 3 14 3 9V5l9-4z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-                Painel do Administrador
-            </h3>
-
+            <h3><svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="currentColor"/><path d="M12 1l9 4v2c0 7-4 12-9 14C7 19 3 14 3 9V5l9-4z" fill="none" stroke="currentColor" stroke-width="2"/></svg> Painel do Administrador</h3>
             <div class="admin-section">
-                <h4>
-                    <svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="currentColor"/><path d="M4 20c0-4 4-7 8-7s8 3 8 7" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-                    Usuários do Sistema
-                </h4>
-                <div style="max-height:200px;overflow-y:auto;">
-                    <table class="admin-table">
-                        <thead><tr><th>Nome</th><th>E-mail</th><th>Tipo</th><th>Ação</th></tr></thead>
-                        <tbody id="admin-users-tbody"></tbody>
-                    </table>
-                </div>
-                <p class="admin-hint" style="margin-top:8px;">
-                    Para adicionar novos usuários, utilize o formulário de cadastro público. Aqui você pode promover/despromover administradores.
-                </p>
+                <h4><svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="currentColor"/><path d="M4 20c0-4 4-7 8-7s8 3 8 7" fill="none" stroke="currentColor" stroke-width="2"/></svg> Usuários do Sistema</h4>
+                <div style="max-height:200px;overflow-y:auto;"><table class="admin-table"><thead><tr><th>Nome</th><th>E-mail</th><th>Tipo</th><th>Ação</th></tr></thead><tbody id="admin-users-tbody"></tbody></table></div>
+                <p class="admin-hint" style="margin-top:8px;">Para adicionar novos usuários, utilize o formulário de cadastro público. Aqui você pode promover/despromover administradores.</p>
             </div>
-
             <div class="admin-section">
-                <h4>
-                    <svg width="14" height="14" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="8.5" cy="10" r="1.5" fill="currentColor"/><circle cx="15.5" cy="10" r="1.5" fill="currentColor"/></svg>
-                    Selecionar Veículo (FIPE) para Associar Serviços
-                </h4>
+                <h4><svg width="14" height="14" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="8.5" cy="10" r="1.5" fill="currentColor"/><circle cx="15.5" cy="10" r="1.5" fill="currentColor"/></svg> Selecionar Veículo (FIPE) para Associar Serviços</h4>
                 <div class="tipo-veiculo-selector" id="admin-tipo-selector">
                     <button class="btn-tipo-veiculo active" data-tipo="carros" onclick="setAdminTipo('carros',this)">🚗 Carros</button>
                     <button class="btn-tipo-veiculo" data-tipo="motos" onclick="setAdminTipo('motos',this)">🏍 Motos</button>
                     <button class="btn-tipo-veiculo" data-tipo="caminhoes" onclick="setAdminTipo('caminhoes',this)">🚛 Caminhões</button>
                 </div>
                 <div class="fipe-grid">
-                    <div class="search-select-container" id="admin-container-marca">
-                        <div class="search-select-label">Fabricante</div>
-                        <button class="select-trigger" onclick="toggleAdminDropdown('marca')"><span id="admin-label-marca">Selecionar Marca...</span> ▼</button>
-                        <div class="dropdown-menu" id="admin-drop-marca"><div class="dropdown-search"><input type="text" placeholder="Filtrar..." oninput="adminFilterOptions('marca',this.value)"></div><div class="dropdown-options" id="admin-options-marca"></div></div>
-                    </div>
-                    <div class="search-select-container" id="admin-container-modelo">
-                        <div class="search-select-label">Modelo</div>
-                        <button class="select-trigger" id="admin-btn-modelo" disabled onclick="toggleAdminDropdown('modelo')"><span id="admin-label-modelo">—</span> ▼</button>
-                        <div class="dropdown-menu" id="admin-drop-modelo"><div class="dropdown-search"><input type="text" placeholder="Filtrar..." oninput="adminFilterOptions('modelo',this.value)"></div><div class="dropdown-options" id="admin-options-modelo"></div></div>
-                    </div>
-                    <div class="search-select-container" id="admin-container-ano">
-                        <div class="search-select-label">Ano / Versão</div>
-                        <button class="select-trigger" id="admin-btn-ano" disabled onclick="toggleAdminDropdown('ano')"><span id="admin-label-ano">—</span> ▼</button>
-                        <div class="dropdown-menu" id="admin-drop-ano"><div class="dropdown-search"><input type="text" placeholder="Filtrar..." oninput="adminFilterOptions('ano',this.value)"></div><div class="dropdown-options" id="admin-options-ano"></div></div>
-                    </div>
+                    <div class="search-select-container" id="admin-container-marca"><div class="search-select-label">Fabricante</div><button class="select-trigger" onclick="toggleAdminDropdown('marca')"><span id="admin-label-marca">Selecionar Marca...</span> ▼</button><div class="dropdown-menu" id="admin-drop-marca"><div class="dropdown-search"><input type="text" placeholder="Filtrar..." oninput="adminFilterOptions('marca',this.value)"></div><div class="dropdown-options" id="admin-options-marca"></div></div></div>
+                    <div class="search-select-container" id="admin-container-modelo"><div class="search-select-label">Modelo</div><button class="select-trigger" id="admin-btn-modelo" disabled onclick="toggleAdminDropdown('modelo')"><span id="admin-label-modelo">—</span> ▼</button><div class="dropdown-menu" id="admin-drop-modelo"><div class="dropdown-search"><input type="text" placeholder="Filtrar..." oninput="adminFilterOptions('modelo',this.value)"></div><div class="dropdown-options" id="admin-options-modelo"></div></div></div>
+                    <div class="search-select-container" id="admin-container-ano"><div class="search-select-label">Ano / Versão</div><button class="select-trigger" id="admin-btn-ano" disabled onclick="toggleAdminDropdown('ano')"><span id="admin-label-ano">—</span> ▼</button><div class="dropdown-menu" id="admin-drop-ano"><div class="dropdown-search"><input type="text" placeholder="Filtrar..." oninput="adminFilterOptions('ano',this.value)"></div><div class="dropdown-options" id="admin-options-ano"></div></div></div>
                 </div>
                 <div style="margin-top:10px;font-size:12px;">Código FIPE: <strong id="admin-fipe-display">—</strong></div>
-
                 <div class="admin-row-inputs" style="margin-top:12px;">
                     <input type="text" id="admin-servico-nome" placeholder="Nome do serviço">
                     <input type="text" id="admin-servico-hh" placeholder="HH (ex: 1.30 = 1h30min)" style="max-width:120px;">
@@ -310,28 +279,17 @@
                     <textarea id="admin-servico-bulk" rows="5" class="auto-expand" placeholder="Adicione serviços em massa (um por linha) no formato: Nome do Serviço, HH, Insumo1, Insumo2...&#10;Exemplo:&#10;Troca de óleo, 0.30, Óleo motor, Filtro&#10;Alinhamento, 1.20&#10;Revisão completa, 2.00, Filtro de ar, Velas"></textarea>
                     <button class="btn-sm primary" onclick="adminAddBulkServicos()" style="margin-top:6px;">Adicionar em Lote</button>
                 </div>
-                <p class="admin-hint">
-                    ⏱ Formato do tempo: <strong>1.00</strong> = 1 hora, <strong>1.30</strong> = 1h30min, <strong>45</strong> = 45 minutos, <strong>0.30</strong> = 30 minutos.<br>
-                    🔧 Insumos: separe por vírgula (ex: Óleo, Filtro, Junta).
-                </p>
-                <div style="max-height:200px;overflow-y:auto;margin-top:10px;">
-                    <table class="admin-table" id="admin-servicos-veiculo-table">
-                        <thead><tr><th>Serviço</th><th>HH</th><th>Insumos</th><th>Ação</th></tr></thead>
-                        <tbody id="admin-servicos-veiculo-tbody"></tbody>
-                    </table>
-                </div>
+                <p class="admin-hint">⏱ Formato do tempo: <strong>1.00</strong> = 1 hora, <strong>1.30</strong> = 1h30min, <strong>45</strong> = 45 minutos, <strong>0.30</strong> = 30 minutos.<br>🔧 Insumos: separe por vírgula (ex: Óleo, Filtro, Junta).</p>
+                <div style="max-height:200px;overflow-y:auto;margin-top:10px;"><table class="admin-table" id="admin-servicos-veiculo-table"><thead><tr><th>Serviço</th><th>HH</th><th>Insumos</th><th>Ação</th></tr></thead><tbody id="admin-servicos-veiculo-tbody"></tbody></table></div>
             </div>
         </div>
     </div>
 
-    <!-- CONTEÚDO PRINCIPAL -->
+    <!-- ==================== CONTEÚDO PRINCIPAL ==================== -->
     <div class="app-container" id="app-container">
         <main>
             <section>
-                <div class="section-title">
-                    <svg width="16" height="16" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="8.5" cy="10" r="1.5" fill="currentColor"/><circle cx="15.5" cy="10" r="1.5" fill="currentColor"/></svg>
-                    Tipo de Veículo
-                </div>
+                <div class="section-title"><svg width="16" height="16" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="8.5" cy="10" r="1.5" fill="currentColor"/><circle cx="15.5" cy="10" r="1.5" fill="currentColor"/></svg> Tipo de Veículo</div>
                 <div class="tipo-veiculo-selector">
                     <button class="btn-tipo-veiculo active" data-tipo="carros" onclick="setTipoVeiculo('carros',this)">🚗 Carros</button>
                     <button class="btn-tipo-veiculo" data-tipo="motos" onclick="setTipoVeiculo('motos',this)">🏍 Motocicletas</button>
@@ -339,10 +297,7 @@
                 </div>
             </section>
             <section>
-                <div class="section-title">
-                    <svg width="16" height="16" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" fill="none" stroke="currentColor" stroke-width="2"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2"/></svg>
-                    Identificação Dinâmica do Veículo
-                </div>
+                <div class="section-title"><svg width="16" height="16" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" fill="none" stroke="currentColor" stroke-width="2"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2"/></svg> Identificação Dinâmica do Veículo</div>
                 <div class="fipe-grid">
                     <div class="search-select-container" id="container-marca"><div class="search-select-label">Fabricante</div><button class="select-trigger" onclick="toggleDropdown('marca')"><span id="label-marca">Selecionar Marca...</span> ▼</button><div class="dropdown-menu" id="drop-marca"><div class="dropdown-search"><input type="text" placeholder="Filtrar Fabricante..." oninput="filterOptions('marca',this.value)"></div><div class="dropdown-options" id="options-marca"></div></div></div>
                     <div class="search-select-container" id="container-modelo"><div class="search-select-label">Modelo</div><button class="select-trigger" id="btn-modelo" disabled onclick="toggleDropdown('modelo')"><span id="label-modelo">— Selecione a Marca —</span> ▼</button><div class="dropdown-menu" id="drop-modelo"><div class="dropdown-search"><input type="text" placeholder="Filtrar Modelo..." oninput="filterOptions('modelo',this.value)"></div><div class="dropdown-options" id="options-modelo"></div></div></div>
@@ -356,20 +311,14 @@
                 </div>
             </section>
             <section>
-                <div class="section-title">
-                    <svg width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="12 6 12 12 16 14" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-                    Configuração de Tarifas
-                </div>
+                <div class="section-title"><svg width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="12 6 12 12 16 14" fill="none" stroke="currentColor" stroke-width="2"/></svg> Configuração de Tarifas</div>
                 <div class="config-grid">
                     <div><div class="search-select-label" style="margin-bottom:8px;">Perfil da Tabela</div><div class="tabela-btn-group"><button class="btn-tabela active" data-tabela="verde" onclick="setTabela('verde')"><strong>Tabela Verde</strong><span style="font-size:10px;">Padrão (100%)</span></button><button class="btn-tabela" data-tabela="amarela" onclick="setTabela('amarela')"><strong>Tabela Amarela</strong><span style="font-size:10px;">Frotas (-20%)</span></button><button class="btn-tabela" data-tabela="vermelha" onclick="setTabela('vermelha')"><strong>Tabela Vermelha</strong><span style="font-size:10px;">Especial (-35%)</span></button></div></div>
                     <div class="input-hh-container"><div class="search-select-label">Valor Base HH (Hora-Homem)</div><div class="input-hh-wrapper"><span class="input-hh-prefix">R$</span><input type="text" id="input-hh-rate" value="150,00" oninput="handleCurrencyMask(this)"></div></div>
                 </div>
             </section>
             <section style="margin-bottom:0;">
-                <div class="section-title">
-                    <svg width="16" height="16" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-                    Catálogo de Mão de Obra <span id="servicos-origem-label" style="font-size:10px;color:var(--text-muted);font-weight:400;"></span>
-                </div>
+                <div class="section-title"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" fill="none" stroke="currentColor" stroke-width="2"/></svg> Catálogo de Mão de Obra <span id="servicos-origem-label" style="font-size:10px;color:var(--text-muted);font-weight:400;"></span></div>
                 <div class="catalogo-controls"><input type="text" class="input-busca" id="input-busca" placeholder="🔍 Digite para pesquisar serviços..." oninput="handleFilterChange()"><div class="categories-container" id="categories-container"></div></div>
                 <div class="table-wrapper" id="table-wrapper"><table><thead><tr><th>Cód</th><th>Descrição do Serviço / Insumos</th><th style="text-align:right;">HH Real</th><th style="text-align:right;">Preço M.O.</th><th style="text-align:center;">Ações</th></tr></thead><tbody id="lista-servicos"></tbody></table></div>
             </section>
@@ -632,7 +581,16 @@
 
             // ========== ADMIN FIPE ==========
             let adminTipo = 'carros', adminMarca=null, adminModelo=null, adminAno=null, adminMarcasData=[], adminModelosData=[], adminAnosData=[];
-            window.setAdminTipo = function(tipo, btn) { /* ... (idêntico ao código anterior) ... */ };
+            window.setAdminTipo = function(tipo, btn) {
+                adminTipo=tipo;
+                document.querySelectorAll('#admin-tipo-selector .btn-tipo-veiculo').forEach(b=>b.classList.remove('active'));
+                btn.classList.add('active');
+                adminMarca=null; adminModelo=null; adminAno=null; setAdminFipeCode(null);
+                document.getElementById('admin-label-marca').innerText='Selecionar Marca...';
+                document.getElementById('admin-label-modelo').innerText='—'; document.getElementById('admin-label-ano').innerText='—';
+                document.getElementById('admin-btn-modelo').disabled=true; document.getElementById('admin-btn-ano').disabled=true;
+                adminLoadMarcas();
+            };
             function adminApiBase() { return `https://parallelum.com.br/fipe/api/v1/${adminTipo}`; }
             async function adminLoadMarcas() { try { const r=await fetch(`${adminApiBase()}/marcas`); adminMarcasData=await r.json(); adminPopulateDropdown('marca',adminMarcasData); } catch(e){} }
             async function adminLoadModelos(marcaId) { try { const r=await fetch(`${adminApiBase()}/marcas/${marcaId}/modelos`); const d=await r.json(); adminModelosData=d.modelos; adminPopulateDropdown('modelo',adminModelosData); document.getElementById('admin-btn-modelo').disabled=false; } catch(e){} }
@@ -700,7 +658,7 @@
             function renderCatalogo() { const tbody=document.getElementById('lista-servicos'); tbody.innerHTML=''; const chunk=servicosFiltradosCache.slice(0,itensExibidosCount); if(!chunk.length){ tbody.innerHTML='<tr><td colspan="5">Nenhum serviço encontrado.</td></tr>'; return; } chunk.forEach(s=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${s.id||'-'}</td><td><div>${s.nome}</div><div class="insumos-badges">${(s.pecasReais||[]).map(p=>`<span class="badge-insumo">${p}</span>`).join('')||'<span class="badge-insumo" style="background:#fff;border:1px dashed #dcdde1;">Sem insumos</span>'}</div></td><td style="text-align:right">${fmtHH(s.hhReal)}</td><td style="text-align:right;font-weight:700;color:var(--primary)">${fmtBRL(s.precoMO)}</td><td style="text-align:center"><button class="btn-add-servico" onclick="addServico('${s.id}')">+ Incluir</button></td>`; tbody.appendChild(tr); }); }
             window.setTabela = function(t) { tabelaAtiva=t; document.querySelectorAll('.btn-tabela').forEach(b=>b.classList.remove('active')); document.querySelector(`[data-tabela="${t}"]`).classList.add('active'); processarServicosFiltrados(); renderOrcamento(); };
 
-            // ========== ORÇAMENTO (mantido igual) ==========
+            // ========== ORÇAMENTO COMPLETO ==========
             window.addServico = function(id) { const serv=servicosFiltradosCache.find(s=>s.id===id)||BASE_SERVICOS.find(s=>s.id===id); if(!serv) return; const exist=orcamento.find(o=>o.id===id); if(exist) exist.qty+=1; else orcamento.push({id, qty:1, customHH:null, customPreco:null, customInsumos:null, editMode:false}); renderOrcamento(); };
             window.removeServico = function(id) { orcamento=orcamento.filter(o=>o.id!==id); renderOrcamento(); };
             window.changeQty = function(id, delta) { const item=orcamento.find(o=>o.id===id); if(!item) return; item.qty+=delta; if(item.qty<=0) removeServico(id); else renderOrcamento(); };
@@ -709,37 +667,85 @@
             window.updateItemCustom = function(id, field, value) { const item=orcamento.find(o=>o.id===id); if(!item) return; if(field==='customHH'){ const parsed=parseClockToHours(value); item.customHH=isNaN(parsed)?null:parsed; } else if(field==='customPreco') item.customPreco=value===''?null:parseBRL(value); else if(field==='customInsumos') item.customInsumos=value===''?null:value; renderOrcamento(); };
             window.recalcularValorItem = function(id) { const item=orcamento.find(o=>o.id===id); if(!item) return; const serv=servicosFiltradosCache.find(s=>s.id===id)||BASE_SERVICOS.find(s=>s.id===id); if(!serv) return; const hh=item.customHH!==null?item.customHH:serv.hh; const rate=parseBRL(document.getElementById('input-hh-rate').value); item.customPreco=hh*rate*TABELAS[tabelaAtiva]; renderOrcamento(); };
             function getItemDetails(item) { const serv=servicosFiltradosCache.find(s=>s.id===item.id)||BASE_SERVICOS.find(s=>s.id===item.id); if(!serv) return null; const regra=getRegraMarcaAtiva(); const hhBase=serv.hh*regra.multHH; const hhReal=item.customHH!==null?item.customHH:hhBase; const rate=parseBRL(document.getElementById('input-hh-rate').value); let precoUnit; if(item.customPreco!==null) precoUnit=item.customPreco; else precoUnit=hhReal*rate*TABELAS[tabelaAtiva]; const insumos=item.customInsumos!==null?item.customInsumos.split(',').map(s=>s.trim()).filter(s=>s):[...(serv.pecas||[])]; if(regra.pecasExtras.length&&item.customInsumos===null) insumos.push(...regra.pecasExtras); const subtotal=precoUnit*item.qty; return {...serv, hhReal, precoUnit, subtotal, insumos}; }
-            function renderOrcamento() { /* ... (idêntico ao último código completo) ... */ }
-            // (A função renderOrcamento é extensa e mantida como no código anterior, sem alterações)
+            function renderOrcamento() {
+                const container=document.getElementById('orc-items-container');
+                if(!orcamento.length){ container.innerHTML='<div class="orc-empty-state"><span>📋</span><p>Nenhum serviço adicionado.</p></div>'; document.getElementById('total-hh-acumulado').innerText='0 min'; document.getElementById('total-itens-count').innerText='0'; document.getElementById('total-financeiro-orc').innerText='R$ 0,00'; return; }
+                let tHH=0, tFin=0, tItens=0; container.innerHTML='';
+                orcamento.forEach(item=>{
+                    const det=getItemDetails(item); if(!det) return;
+                    tHH+=det.hhReal*item.qty; tFin+=det.subtotal; tItens+=item.qty;
+                    const div=document.createElement('div'); div.className='orc-item';
+                    if(item.editMode){
+                        const insumoList=item.customInsumos!==null?item.customInsumos.split(',').map(s=>s.trim()).filter(s=>s):det.insumos;
+                        const insumosHtml=insumoList.map((ins,i)=>`<span class="badge-insumo">${ins}<span class="remove-insumo" onclick="removeInsumoItem('${item.id}',${i})">×</span></span>`).join('');
+                        div.innerHTML=`
+                            <div class="orc-item-row1"><span class="orc-item-name">${det.nome}</span><div class="orc-item-actions"><button class="btn-edit-item" title="Salvar" onclick="toggleEditItem('${item.id}')">💾</button><button class="btn-remove-item" title="Remover" onclick="removeServico('${item.id}')">🗑</button></div></div>
+                            <div class="edit-fields">
+                                <label>HH: <input type="text" value="${hoursToClock(item.customHH!==null?item.customHH:det.hhReal)}" onchange="updateItemCustom('${item.id}','customHH',this.value)"></label>
+                                <label>Valor Unit: <input type="text" value="${fmtBRL(det.precoUnit)}" onchange="updateItemCustom('${item.id}','customPreco',this.value)"></label>
+                                <div style="flex:1;min-width:150px;"><label>Insumos:</label><div class="insumo-list">${insumosHtml||'<span style="font-size:10px;">Nenhum</span>'}</div><div style="display:flex;gap:4px;margin-top:4px;"><input type="text" id="insumo-add-${item.id}" placeholder="Novo" style="flex:1;font-size:10px;padding:3px 6px;"><button class="small-btn btn-sm primary" onclick="addInsumoItem('${item.id}')">+</button></div></div>
+                                <button class="small-btn btn-sm success" onclick="recalcularValorItem('${item.id}')">Recalc.</button>
+                            </div>
+                            <div class="orc-item-row2"><div class="qty-controls"><button class="qty-btn" onclick="changeQty('${item.id}',-1)">-</button><span class="qty-val">${item.qty}</span><button class="qty-btn" onclick="changeQty('${item.id}',1)">+</button></div><span>${fmtHH(det.hhReal*item.qty)}</span><span class="orc-item-price">${fmtBRL(det.subtotal)}</span></div>`;
+                    } else {
+                        div.innerHTML=`
+                            <div class="orc-item-row1"><span class="orc-item-name">${det.nome}</span><div class="orc-item-actions"><button class="btn-edit-item" title="Editar" onclick="toggleEditItem('${item.id}')">✎</button><button class="btn-remove-item" title="Remover" onclick="removeServico('${item.id}')">🗑</button></div></div>
+                            <div class="orc-item-row2"><div class="qty-controls"><button class="qty-btn" onclick="changeQty('${item.id}',-1)">-</button><span class="qty-val">${item.qty}</span><button class="qty-btn" onclick="changeQty('${item.id}',1)">+</button></div><span>${fmtHH(det.hhReal*item.qty)}</span><span class="orc-item-price">${fmtBRL(det.subtotal)}</span></div>`;
+                    }
+                    container.appendChild(div);
+                });
+                document.getElementById('total-hh-acumulado').innerText=fmtHH(tHH);
+                document.getElementById('total-itens-count').innerText=tItens;
+                document.getElementById('total-financeiro-orc').innerText=fmtBRL(tFin);
+            }
             window.removeInsumoItem = function(id, index) { const item=orcamento.find(o=>o.id===id); if(!item) return; const insumos=item.customInsumos!==null?item.customInsumos.split(',').map(s=>s.trim()).filter(s=>s):[]; insumos.splice(index,1); item.customInsumos=insumos.length?insumos.join(', '):null; renderOrcamento(); };
             window.addInsumoItem = function(id) { const input=document.getElementById(`insumo-add-${id}`); if(!input) return; const val=input.value.trim(); if(!val) return; const item=orcamento.find(o=>o.id===id); if(!item) return; const insumos=item.customInsumos!==null?item.customInsumos.split(',').map(s=>s.trim()).filter(s=>s):[]; insumos.push(val); item.customInsumos=insumos.join(', '); input.value=''; renderOrcamento(); };
 
-            // ========== IMPRESSÃO / PDF / WHATSAPP / IMAGEM (mantidos) ==========
-            function getOrcamentoData() { /* ... */ }
-            window.printOrcamento = function() { /* ... */ };
-            window.downloadPDF = function() { /* ... */ };
-            window.shareWhatsApp = function() { /* ... */ };
-            window.exportarImagemOrcamento = async function() { /* ... */ };
+            // ========== IMPRESSÃO / PDF / WHATSAPP ==========
+            function getOrcamentoData() {
+                const vNome=veiculoDetalhes?`${veiculoDetalhes.Marca} ${veiculoDetalhes.Modelo} (${veiculoDetalhes.AnoModelo})`:'Não Identificado';
+                const vFipe=veiculoDetalhes?veiculoDetalhes.Valor:'N/A', vComb=veiculoDetalhes?veiculoDetalhes.Combustivel:'N/A', vCod=veiculoDetalhes?veiculoDetalhes.CodigoFipe:'N/A';
+                const rate=parseBRL(document.getElementById('input-hh-rate').value);
+                const perfil=tabelaAtiva==='verde'?'Verde (Normal)':tabelaAtiva==='amarela'?'Amarela (Frota -20%)':'Vermelha (Especial -35%)';
+                const linhas=[]; let tHH=0, tFin=0;
+                orcamento.forEach(item=>{ const d=getItemDetails(item); if(d){ linhas.push({...d, qty:item.qty}); tHH+=d.hhReal*item.qty; tFin+=d.subtotal; } });
+                return {vNome,vFipe,vComb,vCod,rate,perfil,linhas,tHH,tFin};
+            }
+            window.printOrcamento = function() {
+                if(!orcamento.length){ alert('Adicione serviços.'); return; } const d=getOrcamentoData();
+                const linhasHtml=d.linhas.map(l=>`<tr><td><strong>${l.id||'-'}</strong></td><td><div>${l.nome}</div><div style="font-size:10px;color:#555;">Insumos: ${l.insumos.join(", ")||'Nenhum'}</div></td><td style="text-align:center">${fmtHH(l.hhReal)}</td><td style="text-align:center">${l.qty}</td><td style="text-align:right">${fmtBRL(l.precoUnit)}</td><td style="text-align:right;font-weight:bold;">${fmtBRL(l.subtotal)}</td></tr>`).join('');
+                const win=window.open("","_blank");
+                win.document.write(`<html><head><title>Orçamento - ${d.vNome}</title><style>body{font-family:sans-serif;padding:30px} .header{border-bottom:2px solid #0099ff} table{width:100%;border-collapse:collapse} th{background:#2c3e50;color:#fff;padding:8px} td{padding:8px;border-bottom:1px solid #ddd}</style></head><body><div class="header"><h2>HoraDoMecânico</h2><p>${d.vNome} | FIPE: ${d.vCod}</p></div><table><tr><th>Cód</th><th>Serviço</th><th>HH</th><th>Qtd</th><th>Unit</th><th>Sub</th></tr>${linhasHtml}</table><p><strong>Total: ${fmtBRL(d.tFin)} | Tempo: ${fmtHH(d.tHH)}</strong></p></body></html>`);
+                win.document.close(); win.print();
+            };
+            window.downloadPDF = function() {
+                if(!orcamento.length){ alert('Adicione serviços.'); return; } const d=getOrcamentoData(); const { jsPDF } = window.jspdf; const doc = new jsPDF();
+                doc.setFontSize(16); doc.text('HoraDoMecânico',15,20); doc.setFontSize(10); doc.text(`Orçamento - ${d.vNome} | FIPE: ${d.vCod}`,15,28);
+                let y=38; d.linhas.forEach(l=>{ doc.text(`${l.nome} (${fmtHH(l.hhReal)}) x${l.qty} = ${fmtBRL(l.subtotal)}`,15,y); y+=7; });
+                doc.text(`Total: ${fmtBRL(d.tFin)} | Tempo: ${fmtHH(d.tHH)}`,15,y+5); doc.save(`orcamento_${d.vNome.replace(/\s+/g,'_')}.pdf`);
+            };
+            window.shareWhatsApp = function() {
+                if(!orcamento.length){ alert('Adicione serviços.'); return; } const d=getOrcamentoData();
+                let txt=`*HoraDoMecânico - Orçamento*\n\n*Veículo:* ${d.vNome}\n*FIPE:* ${d.vCod}\n*Perfil:* ${d.perfil}\n\n`;
+                d.linhas.forEach(l=> txt+=`• ${l.nome} (${fmtHH(l.hhReal)}) x${l.qty} = ${fmtBRL(l.subtotal)}\n`);
+                txt+=`\n*Total:* ${fmtBRL(d.tFin)}\n*Tempo:* ${fmtHH(d.tHH)}`; window.open(`https://wa.me/?text=${encodeURIComponent(txt)}`,'_blank');
+            };
+            window.exportarImagemOrcamento = async function() {
+                const sidebar=document.getElementById('orcamento-sidebar'); const canvas=await html2canvas(sidebar,{backgroundColor:'#fff',scale:2});
+                const a=document.createElement('a'); a.download=`orcamento_${Date.now()}.png`; a.href=canvas.toDataURL('image/png'); a.click();
+            };
 
             // ========== INICIALIZAÇÃO ==========
             window.addEventListener('DOMContentLoaded', async () => {
                 const { data: { session } } = await supabase.auth.getSession();
                 if (session) { await updateUIForUser(); } else { document.getElementById('login-overlay').style.display = 'flex'; }
-                document.querySelectorAll('.login-tab').forEach(tab => { /* ... */ });
-                loadMarcas();
-                setupInfiniteScroll();
+                document.querySelectorAll('.login-tab').forEach(tab => { tab.addEventListener('click', () => { document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active')); tab.classList.add('active'); const t = tab.dataset.tab; document.getElementById('form-login').style.display = t==='login'?'flex':'none'; document.getElementById('form-cadastro').style.display = t==='cadastro'?'flex':'none'; document.getElementById('form-recuperar').style.display = t==='recuperar'?'flex':'none'; }); });
+                loadMarcas(); setupInfiniteScroll();
                 document.addEventListener('click', e => { if (!e.target.closest('.search-select-container')) closeAllDropdowns(); });
                 document.getElementById('admin-overlay').addEventListener('click', function(e) { if (e.target === this) closeAdminPanel(); });
-                const footer = document.querySelector('.sidebar-footer');
-                const btnImg = document.createElement('button');
-                btnImg.className = 'btn-download-pdf';
-                btnImg.style.background = '#8e44ad';
-                btnImg.innerHTML = '🖼 Gerar Imagem do Orçamento';
-                btnImg.onclick = exportarImagemOrcamento;
-                footer.insertBefore(btnImg, footer.children[footer.children.length-1]);
+                const footer = document.querySelector('.sidebar-footer'); const btnImg = document.createElement('button'); btnImg.className = 'btn-download-pdf'; btnImg.style.background = '#8e44ad'; btnImg.innerHTML = '🖼 Gerar Imagem do Orçamento'; btnImg.onclick = exportarImagemOrcamento; footer.insertBefore(btnImg, footer.children[footer.children.length-1]);
                 adminLoadMarcas();
-                const bulkTextarea = document.getElementById('admin-servico-bulk');
-                if(bulkTextarea) { bulkTextarea.addEventListener('input', function() { this.style.height = 'auto'; this.style.height = (this.scrollHeight) + 'px'; }); }
+                const bulkTextarea = document.getElementById('admin-servico-bulk'); if(bulkTextarea) { bulkTextarea.addEventListener('input', function() { this.style.height = 'auto'; this.style.height = (this.scrollHeight) + 'px'; }); }
             });
         })();
     </script>
