@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HoraDoMecânico - Sistema de Consulta de Mão de Obra</title>
+    <title>HoraDoMecânico - Catálogo de Mão de Obra</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
     <style>
+        /* ========== ESTILOS (mesmos do original, apenas removido login) ========== */
         :root {
             --primary: #0099ff;
             --primary-hover: #007acc;
@@ -26,134 +26,8 @@
             --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             --radius: 8px;
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-        }
-        body {
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        /* OVERLAY DE LOGIN */
-        #login-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        #login-modal {
-            background: #fff;
-            border-radius: 12px;
-            padding: 30px 25px;
-            width: 400px;
-            max-width: 95vw;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-            position: relative;
-        }
-        #login-modal h2 {
-            text-align: center;
-            margin-bottom: 8px;
-            color: var(--text-main);
-            font-size: 22px;
-        }
-        #login-modal .sub {
-            text-align: center;
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-bottom: 20px;
-        }
-        .login-tabs {
-            display: flex;
-            gap: 4px;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #eee;
-        }
-        .login-tab {
-            flex: 1;
-            padding: 10px;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 13px;
-            color: var(--text-muted);
-            border-bottom: 2px solid transparent;
-            margin-bottom: -2px;
-            transition: all 0.2s;
-        }
-        .login-tab.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
-        }
-        .login-form {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .login-form input {
-            padding: 11px 14px;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            font-size: 13px;
-            outline: none;
-        }
-        .login-form input:focus {
-            border-color: var(--primary);
-        }
-        .btn-login {
-            padding: 12px;
-            background: var(--primary);
-            color: #fff;
-            border: none;
-            border-radius: var(--radius);
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .btn-login:hover {
-            background: var(--primary-hover);
-        }
-        .btn-whatsapp {
-            padding: 12px;
-            background: #25D366;
-            color: #fff;
-            border: none;
-            border-radius: var(--radius);
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: background 0.2s;
-        }
-        .btn-whatsapp:hover {
-            background: #1ebe57;
-        }
-        .login-error {
-            color: #e74c3c;
-            font-size: 11px;
-            text-align: center;
-            min-height: 16px;
-        }
-        .login-success {
-            color: #2ecc71;
-            font-size: 11px;
-            text-align: center;
-            min-height: 16px;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-main); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; }
 
         /* HEADER */
         header {
@@ -179,21 +53,10 @@
             gap: 6px;
             cursor: pointer;
         }
-        .logo-area h1 span {
-            color: var(--primary);
-        }
-        .subtitle {
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-muted);
-        }
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .btn-admin-header {
+        .logo-area h1 span { color: var(--primary); }
+        .subtitle { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); }
+        .header-right { display: flex; align-items: center; gap: 12px; }
+        .btn-admin {
             background: #fff;
             border: 1px solid var(--primary);
             color: var(--primary);
@@ -208,34 +71,7 @@
             transition: all 0.2s;
             white-space: nowrap;
         }
-        .btn-admin-header:hover {
-            background: var(--primary);
-            color: #fff;
-        }
-        .user-badge {
-            font-size: 11px;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            white-space: nowrap;
-        }
-        .btn-logout {
-            background: transparent;
-            border: 1px solid #e74c3c;
-            color: #e74c3c;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
-        .btn-logout:hover {
-            background: #e74c3c;
-            color: #fff;
-        }
+        .btn-admin:hover { background: var(--primary); color: #fff; }
         .hamburger-btn {
             background: transparent;
             border: none;
@@ -245,11 +81,8 @@
             padding: 4px 8px;
             border-radius: 6px;
             transition: background 0.2s;
-            line-height: 1;
         }
-        .hamburger-btn:hover {
-            background: #f1f2f6;
-        }
+        .hamburger-btn:hover { background: #f1f2f6; }
 
         /* MENU LATERAL REDES SOCIAIS */
         #social-drawer-overlay {
@@ -273,23 +106,10 @@
             flex-direction: column;
             padding: 20px;
         }
-        #social-drawer.open {
-            right: 0;
-        }
-        #social-drawer h3 {
-            font-size: 16px;
-            margin-bottom: 20px;
-            color: var(--text-main);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        #social-drawer .social-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        #social-drawer .social-link {
+        #social-drawer.open { right: 0; }
+        #social-drawer h3 { font-size: 16px; margin-bottom: 20px; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+        .social-list { display: flex; flex-direction: column; gap: 10px; }
+        .social-link {
             display: flex;
             align-items: center;
             gap: 12px;
@@ -301,14 +121,9 @@
             font-weight: 500;
             background: #f8f9fa;
             transition: all 0.2s;
-            border: 1px solid transparent;
         }
-        #social-drawer .social-link:hover {
-            background: var(--primary-light);
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-        #social-drawer .social-link .icon-circle {
+        .social-link:hover { background: var(--primary-light); color: var(--primary); }
+        .social-link .icon-circle {
             width: 36px;
             height: 36px;
             border-radius: 50%;
@@ -324,7 +139,7 @@
         .icon-yt { background: #ff0000; }
         .icon-tt { background: #000; }
         .icon-wa { background: #25D366; }
-        #social-drawer .close-drawer {
+        .close-drawer {
             position: absolute;
             top: 15px;
             right: 15px;
@@ -355,730 +170,100 @@
             overflow-y: auto;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
         }
-        #admin-modal h3 {
-            margin-bottom: 15px;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .admin-section {
-            margin-bottom: 20px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: var(--radius);
-        }
-        .admin-section h4 {
-            font-size: 13px;
-            text-transform: uppercase;
-            color: var(--primary);
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .admin-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
-            margin-bottom: 10px;
-        }
-        .admin-table th {
-            background: #e9ecef;
-            padding: 8px;
-            text-align: left;
-            font-size: 10px;
-            text-transform: uppercase;
-            color: var(--text-muted);
-        }
-        .admin-table td {
-            padding: 8px;
-            border-bottom: 1px solid #ddd;
-        }
-        .admin-row-inputs {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-top: 8px;
-            align-items: flex-end;
-        }
-        .admin-row-inputs input,
-        .admin-row-inputs select,
-        .admin-row-inputs textarea {
-            padding: 7px 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            font-size: 12px;
-        }
-        .admin-row-inputs input[type="text"],
-        .admin-row-inputs input[type="email"] {
-            flex: 1;
-            min-width: 120px;
-        }
-        .btn-sm {
-            padding: 7px 14px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-        .btn-sm.primary {
-            background: var(--primary);
-            color: #fff;
-        }
-        .btn-sm.danger {
-            background: #e74c3c;
-            color: #fff;
-        }
-        .btn-sm.success {
-            background: #2ecc71;
-            color: #fff;
-        }
-        .btn-close-admin {
-            float: right;
-            background: transparent;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            color: var(--text-muted);
-        }
-        .admin-hint {
-            font-size: 10px;
-            color: var(--text-muted);
-            margin-top: 4px;
-            line-height: 1.4;
-        }
-        .auto-expand {
-            min-height: 80px;
-            resize: vertical;
-            width: 100%;
-        }
+        #admin-modal h3 { margin-bottom: 15px; font-size: 18px; display: flex; align-items: center; gap: 8px; }
+        .admin-section { margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: var(--radius); }
+        .admin-section h4 { font-size: 13px; text-transform: uppercase; color: var(--primary); margin-bottom: 10px; }
+        .admin-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 10px; }
+        .admin-table th { background: #e9ecef; padding: 8px; text-align: left; font-size: 10px; color: var(--text-muted); }
+        .admin-table td { padding: 8px; border-bottom: 1px solid #ddd; }
+        .admin-row-inputs { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; align-items: flex-end; }
+        .admin-row-inputs input, .admin-row-inputs select, .admin-row-inputs textarea { padding: 7px 10px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px; }
+        .btn-sm { padding: 7px 14px; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600; white-space: nowrap; }
+        .btn-sm.primary { background: var(--primary); color: #fff; }
+        .btn-sm.danger { background: #e74c3c; color: #fff; }
+        .btn-sm.success { background: #2ecc71; color: #fff; }
+        .btn-close-admin { float: right; background: transparent; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted); }
+        .admin-hint { font-size: 10px; color: var(--text-muted); margin-top: 4px; }
 
-        /* TIPO DE VEÍCULO */
-        .tipo-veiculo-selector {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-bottom: 15px;
-        }
-        .btn-tipo-veiculo {
-            padding: 10px 18px;
-            border: 2px solid var(--border-color);
-            background: #fff;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.2s;
-        }
-        .btn-tipo-veiculo.active {
-            border-color: var(--primary);
-            background: var(--primary-light);
-            color: var(--primary);
-        }
+        /* CONTEÚDO PRINCIPAL (igual ao original) */
+        .app-container { display: grid; grid-template-columns: 1fr 360px; gap: 20px; padding: 20px; flex: 1; max-width: 1600px; width: 100%; margin: 0 auto; }
+        @media (max-width: 992px) { .app-container { grid-template-columns: 1fr; } .sidebar { position: static !important; height: auto !important; } }
+        section { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow); }
+        .section-title { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--primary); margin-bottom: 15px; display: flex; align-items: center; gap: 6px; }
+        .fipe-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .search-select-container { position: relative; }
+        .search-select-label { font-size: 11px; color: var(--text-muted); margin-bottom: 5px; font-weight: 500; }
+        .select-trigger { width: 100%; background: var(--bg-card); border: 1px solid var(--border-color); padding: 10px 12px; border-radius: var(--radius); cursor: pointer; text-align: left; font-size: 13px; display: flex; justify-content: space-between; align-items: center; }
+        .select-trigger:disabled { background: #f5f5f5; cursor: not-allowed; color: var(--text-muted); }
+        .dropdown-menu { position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); margin-top: 5px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); z-index: 99; display: none; flex-direction: column; max-height: 280px; overflow: hidden; }
+        .dropdown-search { padding: 8px; border-bottom: 1px solid var(--border-color); }
+        .dropdown-search input { width: 100%; padding: 8px; font-size: 13px; border: 1px solid var(--border-color); border-radius: 4px; }
+        .dropdown-options { overflow-y: auto; max-height: 200px; }
+        .dropdown-option { width: 100%; padding: 10px 12px; font-size: 13px; border: none; background: transparent; text-align: left; cursor: pointer; }
+        .dropdown-option:hover { background: var(--primary-light); color: var(--primary); }
+        .veic-info-box { margin-top: 15px; padding: 15px; background: var(--primary-light); border-left: 4px solid var(--primary); border-radius: var(--radius); display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px; }
+        .info-stat-title { font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
+        .info-stat-value { font-size: 14px; font-weight: 600; }
+        .config-grid { display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end; }
+        .tabela-btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+        .btn-tabela { padding: 10px 15px; border: 1px solid var(--border-color); background: var(--bg-card); cursor: pointer; border-radius: var(--radius); font-size: 13px; font-weight: 500; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+        .btn-tabela.active[data-tabela="verde"] { border-color: var(--success); color: var(--success); background: #eafaf1; }
+        .btn-tabela.active[data-tabela="amarela"] { border-color: #f1c40f; color: #d4ac0d; background: #fef9e7; }
+        .btn-tabela.active[data-tabela="vermelha"] { border-color: #e74c3c; color: #e74c3c; background: #fdedec; }
+        .input-hh-container { flex: 1; min-width: 180px; }
+        .input-hh-wrapper { position: relative; display: flex; align-items: center; }
+        .input-hh-prefix { position: absolute; left: 12px; font-size: 14px; color: var(--text-muted); }
+        .input-hh-wrapper input { width: 100%; padding: 10px 12px 10px 35px; font-size: 16px; font-weight: 700; border: 1px solid var(--border-color); border-radius: var(--radius); outline: none; }
+        .catalogo-controls { display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
+        .input-busca { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius); outline: none; font-size: 13px; }
+        .categories-container { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 5px; }
+        .btn-cat { padding: 6px 12px; background: #f1f2f6; border: 1px solid transparent; border-radius: 20px; font-size: 12px; cursor: pointer; white-space: nowrap; font-weight: 500; }
+        .btn-cat.active { background: var(--primary); color: #fff; }
+        .table-wrapper { max-height: 500px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: var(--radius); }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { background: #f8f9fa; padding: 12px; font-size: 11px; text-transform: uppercase; color: var(--text-muted); position: sticky; top: 0; border-bottom: 1px solid var(--border-color); }
+        td { padding: 12px; border-bottom: 1px solid #f1f2f6; vertical-align: middle; }
+        .insumos-badges { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+        .badge-insumo { background: #f1f2f6; color: var(--text-muted); font-size: 10px; padding: 2px 6px; border-radius: 4px; }
+        .btn-add-servico { background: var(--primary-light); color: var(--primary); border: 1px solid var(--primary); padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 11px; }
+        .btn-add-servico:hover { background: var(--primary); color: #fff; }
 
-        /* MAIN CONTAINER */
-        .app-container {
-            display: grid;
-            grid-template-columns: 1fr 360px;
-            gap: 20px;
-            padding: 20px;
-            flex: 1;
-            max-width: 1600px;
-            width: 100%;
-            margin: 0 auto;
-        }
-        @media (max-width: 992px) {
-            .app-container {
-                grid-template-columns: 1fr;
-            }
-            .sidebar {
-                position: static !important;
-                height: auto !important;
-            }
-        }
-
-        /* SECTIONS / CARDS */
-        section {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow);
-        }
-        .section-title {
-            font-size: 13px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--primary);
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .fipe-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-        }
-        .search-select-container {
-            position: relative;
-        }
-        .search-select-label {
-            font-size: 11px;
-            color: var(--text-muted);
-            margin-bottom: 5px;
-            font-weight: 500;
-        }
-        .select-trigger {
-            width: 100%;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            padding: 10px 12px;
-            border-radius: var(--radius);
-            cursor: pointer;
-            text-align: left;
-            font-size: 13px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: var(--text-main);
-            transition: border 0.2s;
-        }
-        .select-trigger:disabled {
-            background: #f5f5f5;
-            cursor: not-allowed;
-            color: var(--text-muted);
-        }
-        .select-trigger:focus {
-            border-color: var(--primary);
-            outline: none;
-        }
-        .dropdown-menu {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            margin-top: 5px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-            z-index: 99;
-            display: none;
-            flex-direction: column;
-            max-height: 280px;
-            overflow: hidden;
-        }
-        .dropdown-search {
-            padding: 8px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .dropdown-search input {
-            width: 100%;
-            padding: 8px;
-            font-size: 13px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            outline: none;
-        }
-        .dropdown-options {
-            overflow-y: auto;
-            max-height: 200px;
-        }
-        .dropdown-option {
-            width: 100%;
-            padding: 10px 12px;
-            font-size: 13px;
-            border: none;
-            background: transparent;
-            text-align: left;
-            cursor: pointer;
-            color: var(--text-main);
-        }
-        .dropdown-option:hover {
-            background: var(--primary-light);
-            color: var(--primary);
-        }
-        .veic-info-box {
-            margin-top: 15px;
-            padding: 15px;
-            background: var(--primary-light);
-            border-left: 4px solid var(--primary);
-            border-radius: var(--radius);
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 15px;
-        }
-        .info-stat-title {
-            font-size: 10px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-        }
-        .info-stat-value {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-main);
-        }
-        .config-grid {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            align-items: flex-end;
-        }
-        .tabela-btn-group {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .btn-tabela {
-            padding: 10px 15px;
-            border: 1px solid var(--border-color);
-            background: var(--bg-card);
-            cursor: pointer;
-            border-radius: var(--radius);
-            font-size: 13px;
-            font-weight: 500;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 2px;
-            transition: all 0.2s;
-        }
-        .btn-tabela.active[data-tabela="verde"] {
-            border-color: var(--success);
-            color: var(--success);
-            background: #eafaf1;
-        }
-        .btn-tabela.active[data-tabela="amarela"] {
-            border-color: #f1c40f;
-            color: #d4ac0d;
-            background: #fef9e7;
-        }
-        .btn-tabela.active[data-tabela="vermelha"] {
-            border-color: #e74c3c;
-            color: #e74c3c;
-            background: #fdedec;
-        }
-        .input-hh-container {
-            flex: 1;
-            min-width: 180px;
-        }
-        .input-hh-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-        .input-hh-prefix {
-            position: absolute;
-            left: 12px;
-            font-size: 14px;
-            color: var(--text-muted);
-            font-weight: 600;
-        }
-        .input-hh-wrapper input {
-            width: 100%;
-            padding: 10px 12px 10px 35px;
-            font-size: 16px;
-            font-weight: 700;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            color: var(--text-main);
-            outline: none;
-        }
-        .input-hh-wrapper input:focus {
-            border-color: var(--primary);
-        }
-        .catalogo-controls {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 15px;
-        }
-        .input-busca {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            outline: none;
-            font-size: 13px;
-        }
-        .categories-container {
-            display: flex;
-            gap: 6px;
-            overflow-x: auto;
-            padding-bottom: 5px;
-        }
-        .btn-cat {
-            padding: 6px 12px;
-            background: #f1f2f6;
-            border: 1px solid transparent;
-            border-radius: 20px;
-            font-size: 12px;
-            cursor: pointer;
-            white-space: nowrap;
-            color: var(--text-main);
-            font-weight: 500;
-        }
-        .btn-cat.active {
-            background: var(--primary);
-            color: #fff;
-        }
-        .table-wrapper {
-            max-height: 500px;
-            overflow-y: auto;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-            font-size: 13px;
-        }
-        th {
-            background: #f8f9fa;
-            padding: 12px;
-            font-size: 11px;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            letter-spacing: 0.5px;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            border-bottom: 1px solid var(--border-color);
-        }
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #f1f2f6;
-            vertical-align: middle;
-        }
-        tr:hover td {
-            background: #fafafa;
-        }
-        .insumos-badges {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
-            margin-top: 4px;
-        }
-        .badge-insumo {
-            background: #f1f2f6;
-            color: var(--text-muted);
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-        .btn-add-servico {
-            background: var(--primary-light);
-            color: var(--primary);
-            border: 1px solid var(--primary);
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 11px;
-            transition: all 0.2s;
-        }
-        .btn-add-servico:hover {
-            background: var(--primary);
-            color: #fff;
-        }
-
-        /* SIDEBAR / ORÇAMENTO */
-        .sidebar {
-            position: sticky;
-            top: 80px;
-            height: calc(100vh - 120px);
-            display: flex;
-            flex-direction: column;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            overflow: hidden;
-        }
-        .sidebar-header {
-            padding: 15px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #f8f9fa;
-        }
-        .sidebar-title {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--text-main);
-        }
-        .btn-clear-orc {
-            background: transparent;
-            border: none;
-            color: #e74c3c;
-            font-size: 11px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        .orc-items {
-            flex: 1;
-            overflow-y: auto;
-            padding: 10px;
-        }
-        .orc-empty-state {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 200px;
-            color: var(--text-muted);
-            font-size: 12px;
-            gap: 8px;
-        }
-        .orc-item {
-            padding: 12px;
-            border-bottom: 1px solid #f1f2f6;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            transition: background 0.2s;
-        }
-        .orc-item:hover {
-            background: #fafafa;
-        }
-        .orc-item-row1 {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-        .orc-item-name {
-            font-size: 12px;
-            font-weight: 500;
-            max-width: 75%;
-        }
-        .orc-item-actions {
-            display: flex;
-            gap: 4px;
-        }
-        .btn-edit-item,
-        .btn-remove-item {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 14px;
-            padding: 2px 4px;
-            border-radius: 3px;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .btn-edit-item:hover {
-            color: var(--primary);
-            background: var(--primary-light);
-        }
-        .btn-remove-item:hover {
-            color: #e74c3c;
-            background: #fdedec;
-        }
-        .orc-item-row2 {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .qty-controls {
-            display: flex;
-            align-items: center;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            background: #fff;
-        }
-        .qty-btn {
-            background: transparent;
-            border: none;
-            width: 24px;
-            height: 24px;
-            cursor: pointer;
-            font-size: 14px;
-            color: var(--text-main);
-        }
-        .qty-val {
-            font-size: 12px;
-            font-weight: 600;
-            width: 24px;
-            text-align: center;
-        }
-        .orc-item-price {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--primary);
-        }
-        .edit-fields {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            align-items: flex-start;
-            background: #f8f9fa;
-            padding: 8px;
-            border-radius: 6px;
-            margin-top: 4px;
-        }
-        .edit-fields label {
-            font-size: 10px;
-            color: var(--text-muted);
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-        }
-        .edit-fields input {
-            padding: 5px 8px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            font-size: 11px;
-            width: 80px;
-        }
-        .insumo-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
-            align-items: center;
-        }
-        .insumo-list .badge-insumo {
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 2px;
-        }
-        .insumo-list .badge-insumo .remove-insumo {
-            font-size: 10px;
-            cursor: pointer;
-            opacity: 0.6;
-            margin-left: 2px;
-        }
-        .insumo-list .badge-insumo:hover .remove-insumo {
-            opacity: 1;
-            color: #e74c3c;
-        }
-        .small-btn {
-            padding: 4px 8px;
-            font-size: 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-        .sidebar-footer {
-            padding: 15px;
-            border-top: 1px solid var(--border-color);
-            background: #f8f9fa;
-        }
-        .totais-list {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            margin-bottom: 15px;
-        }
-        .total-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-        .total-row.final {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-top: 4px;
-            padding-top: 6px;
-            border-top: 1px solid var(--border-color);
-        }
-        .btn-print,
-        .btn-download-pdf,
-        .btn-share-wa {
-            width: 100%;
-            padding: 12px;
-            border-radius: var(--radius);
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-            margin-bottom: 8px;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            transition: opacity 0.2s;
-        }
-        .btn-print {
-            background: var(--primary);
-            color: #fff;
-        }
-        .btn-print:hover {
-            opacity: 0.9;
-        }
-        .btn-share-wa {
-            background: #25D366;
-            color: #fff;
-        }
-        .btn-share-wa:hover {
-            opacity: 0.9;
-        }
-        .btn-download-pdf {
-            background: #2c3e50;
-            color: #fff;
-        }
-        .btn-download-pdf:hover {
-            opacity: 0.9;
-        }
-        .icon-svg {
-            width: 16px;
-            height: 16px;
-            vertical-align: middle;
-            fill: currentColor;
-        }
+        /* SIDEBAR */
+        .sidebar { position: sticky; top: 80px; height: calc(100vh - 120px); display: flex; flex-direction: column; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); overflow: hidden; }
+        .sidebar-header { padding: 15px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; background: #f8f9fa; }
+        .sidebar-title { font-size: 14px; font-weight: 700; }
+        .btn-clear-orc { background: transparent; border: none; color: #e74c3c; font-size: 11px; cursor: pointer; font-weight: 600; }
+        .orc-items { flex: 1; overflow-y: auto; padding: 10px; }
+        .orc-empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 200px; color: var(--text-muted); font-size: 12px; gap: 8px; }
+        .orc-item { padding: 12px; border-bottom: 1px solid #f1f2f6; display: flex; flex-direction: column; gap: 6px; }
+        .orc-item-row1 { display: flex; justify-content: space-between; align-items: flex-start; }
+        .orc-item-name { font-size: 12px; font-weight: 500; max-width: 75%; }
+        .orc-item-actions { display: flex; gap: 4px; }
+        .btn-edit-item, .btn-remove-item { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 14px; padding: 2px 4px; border-radius: 3px; }
+        .btn-edit-item:hover { color: var(--primary); background: var(--primary-light); }
+        .btn-remove-item:hover { color: #e74c3c; background: #fdedec; }
+        .orc-item-row2 { display: flex; justify-content: space-between; align-items: center; }
+        .qty-controls { display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: 4px; background: #fff; }
+        .qty-btn { background: transparent; border: none; width: 24px; height: 24px; cursor: pointer; font-size: 14px; }
+        .qty-val { font-size: 12px; font-weight: 600; width: 24px; text-align: center; }
+        .orc-item-price { font-size: 13px; font-weight: 700; color: var(--primary); }
+        .edit-fields { display: flex; flex-wrap: wrap; gap: 8px; background: #f8f9fa; padding: 8px; border-radius: 6px; margin-top: 4px; }
+        .edit-fields label { font-size: 10px; color: var(--text-muted); display: flex; flex-direction: column; gap: 3px; }
+        .edit-fields input { padding: 5px 8px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 11px; width: 80px; }
+        .insumo-list { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+        .small-btn { padding: 4px 8px; font-size: 10px; border-radius: 4px; cursor: pointer; }
+        .sidebar-footer { padding: 15px; border-top: 1px solid var(--border-color); background: #f8f9fa; }
+        .totais-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 15px; }
+        .total-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); }
+        .total-row.final { font-size: 16px; font-weight: 700; color: var(--text-main); margin-top: 4px; padding-top: 6px; border-top: 1px solid var(--border-color); }
+        .btn-print, .btn-download-pdf, .btn-share-wa { width: 100%; padding: 12px; border-radius: var(--radius); font-weight: 600; font-size: 13px; cursor: pointer; margin-bottom: 8px; border: none; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn-print { background: var(--primary); color: #fff; }
+        .btn-share-wa { background: #25D366; color: #fff; }
+        .btn-download-pdf { background: #2c3e50; color: #fff; }
+        .icon-svg { width: 16px; height: 16px; vertical-align: middle; fill: currentColor; }
     </style>
 </head>
 <body>
-
-    <!-- OVERLAY DE LOGIN -->
-    <div id="login-overlay">
-        <div id="login-modal">
-            <h2>HoraDo<span style="color:var(--primary);">Mecânico</span></h2>
-            <p class="sub">Sistema de Gestão de Mão de Obra</p>
-            <div class="login-tabs">
-                <button class="login-tab active" data-tab="login">Entrar</button>
-                <button class="login-tab" data-tab="cadastro">Cadastrar</button>
-                <button class="login-tab" data-tab="recuperar">Recuperar Senha</button>
-            </div>
-            <form class="login-form" id="form-login" onsubmit="handleLogin(event)">
-                <input type="email" id="login-email" placeholder="E-mail" required>
-                <input type="password" id="login-senha" placeholder="Senha" required>
-                <p class="login-error" id="login-error"></p>
-                <button type="submit" class="btn-login">🔐 Entrar no Sistema</button>
-            </form>
-            <form class="login-form" id="form-cadastro" style="display:none;" onsubmit="handleCadastro(event)">
-                <input type="text" id="cad-nome" placeholder="Nome completo" required>
-                <input type="email" id="cad-email" placeholder="E-mail" required>
-                <input type="password" id="cad-senha" placeholder="Crie uma senha" required>
-                <p class="login-error" id="cad-error"></p>
-                <p class="login-success" id="cad-success"></p>
-                <button type="submit" class="btn-login">📝 Solicitar Cadastro</button>
-            </form>
-            <form class="login-form" id="form-recuperar" style="display:none;" onsubmit="handleRecuperar(event)">
-                <p style="font-size:12px;color:var(--text-muted);text-align:center;">Enviaremos um link de redefinição de senha via WhatsApp para o administrador. Você receberá uma nova senha em breve.</p>
-                <input type="email" id="rec-email" placeholder="E-mail cadastrado" required>
-                <p class="login-error" id="rec-error"></p>
-                <p class="login-success" id="rec-success"></p>
-                <button type="submit" class="btn-whatsapp">📱 Solicitar via WhatsApp</button>
-            </form>
-        </div>
-    </div>
 
     <!-- HEADER -->
     <header>
@@ -1087,18 +272,11 @@
             <div class="subtitle">Gestão de Homem-Hora & Orçamentos</div>
         </div>
         <div class="header-right">
-            <span class="user-badge" id="user-badge">
-                <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="currentColor"/><path d="M4 20c0-4 4-7 8-7s8 3 8 7" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-                <span id="user-name-display">Usuário</span>
-            </span>
-            <button class="btn-admin-header" id="btn-admin-header" style="display:none;" onclick="openAdminPanel()">
-                <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="currentColor"/><path d="M12 1l9 4v2c0 7-4 12-9 14C7 19 3 14 3 9V5l9-4z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+            <button class="btn-admin" id="btn-admin" onclick="openAdminPanel()">
+                <svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="currentColor"/><path d="M12 1l9 4v2c0 7-4 12-9 14C7 19 3 14 3 9V5l9-4z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
                 Administração
             </button>
-            <button class="btn-logout" onclick="handleLogout()">Sair</button>
-            <button class="hamburger-btn" onclick="toggleSocialDrawer()" title="Redes Sociais">
-                <svg width="22" height="18" viewBox="0 0 22 18"><rect width="22" height="2.5" rx="1" fill="currentColor"/><rect y="7.5" width="22" height="2.5" rx="1" fill="currentColor"/><rect y="15" width="22" height="2.5" rx="1" fill="currentColor"/></svg>
-            </button>
+            <button class="hamburger-btn" onclick="toggleSocialDrawer()">☰</button>
         </div>
     </header>
 
@@ -1106,24 +284,13 @@
     <div id="social-drawer-overlay" onclick="toggleSocialDrawer()"></div>
     <div id="social-drawer">
         <button class="close-drawer" onclick="toggleSocialDrawer()">✕</button>
-        <h3><svg width="20" height="20" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="2" fill="none"/></svg> Redes Sociais</h3>
-        <p style="font-size:11px;color:var(--text-muted);margin-bottom:15px;">Siga-nos nas redes</p>
+        <h3>Redes Sociais</h3>
         <div class="social-list">
-            <a href="#" class="social-link" target="_blank" rel="noopener">
-                <span class="icon-circle icon-fb">f</span> Facebook
-            </a>
-            <a href="#" class="social-link" target="_blank" rel="noopener">
-                <span class="icon-circle icon-ig">📷</span> Instagram
-            </a>
-            <a href="#" class="social-link" target="_blank" rel="noopener">
-                <span class="icon-circle icon-yt">▶</span> YouTube
-            </a>
-            <a href="#" class="social-link" target="_blank" rel="noopener">
-                <span class="icon-circle icon-tt">🎵</span> TikTok
-            </a>
-            <a href="https://wa.me/5583986737667" class="social-link" target="_blank" rel="noopener">
-                <span class="icon-circle icon-wa">💬</span> WhatsApp
-            </a>
+            <a href="#" class="social-link"><span class="icon-circle icon-fb">f</span> Facebook</a>
+            <a href="#" class="social-link"><span class="icon-circle icon-ig">📷</span> Instagram</a>
+            <a href="#" class="social-link"><span class="icon-circle icon-yt">▶</span> YouTube</a>
+            <a href="#" class="social-link"><span class="icon-circle icon-tt">🎵</span> TikTok</a>
+            <a href="https://wa.me/5583986737667" class="social-link"><span class="icon-circle icon-wa">💬</span> WhatsApp</a>
         </div>
     </div>
 
@@ -1131,39 +298,9 @@
     <div id="admin-overlay">
         <div id="admin-modal">
             <button class="btn-close-admin" onclick="closeAdminPanel()">✕</button>
-            <h3>
-                <svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="currentColor"/><path d="M12 1l9 4v2c0 7-4 12-9 14C7 19 3 14 3 9V5l9-4z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-                Painel do Administrador
-            </h3>
-
+            <h3>Administração de Serviços por Veículo</h3>
             <div class="admin-section">
-                <h4>
-                    <svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="currentColor"/><path d="M4 20c0-4 4-7 8-7s8 3 8 7" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-                    Usuários do Sistema
-                </h4>
-                <div style="max-height:200px;overflow-y:auto;">
-                    <table class="admin-table" id="admin-users-table">
-                        <thead><tr><th>Nome</th><th>E-mail</th><th>Tipo</th><th>Ação</th></tr></thead>
-                        <tbody id="admin-users-tbody"></tbody>
-                    </table>
-                </div>
-                <div class="admin-row-inputs">
-                    <input type="text" id="admin-new-name" placeholder="Nome">
-                    <input type="email" id="admin-new-email" placeholder="E-mail">
-                    <input type="password" id="admin-new-senha" placeholder="Senha">
-                    <select id="admin-new-tipo">
-                        <option value="normal">Usuário Normal</option>
-                        <option value="admin">Administrador</option>
-                    </select>
-                    <button class="btn-sm primary" onclick="adminAddUser()">+ Adicionar</button>
-                </div>
-            </div>
-
-            <div class="admin-section">
-                <h4>
-                    <svg width="14" height="14" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="8.5" cy="10" r="1.5" fill="currentColor"/><circle cx="15.5" cy="10" r="1.5" fill="currentColor"/></svg>
-                    Selecionar Veículo (FIPE) para Associar Serviços
-                </h4>
+                <h4>Selecionar Veículo (FIPE)</h4>
                 <div class="tipo-veiculo-selector" id="admin-tipo-selector">
                     <button class="btn-tipo-veiculo active" data-tipo="carros" onclick="setAdminTipo('carros',this)">🚗 Carros</button>
                     <button class="btn-tipo-veiculo" data-tipo="motos" onclick="setAdminTipo('motos',this)">🏍 Motos</button>
@@ -1186,22 +323,19 @@
                         <div class="dropdown-menu" id="admin-drop-ano"><div class="dropdown-search"><input type="text" placeholder="Filtrar..." oninput="adminFilterOptions('ano',this.value)"></div><div class="dropdown-options" id="admin-options-ano"></div></div>
                     </div>
                 </div>
-                <div style="margin-top:10px;font-size:12px;">Código FIPE: <strong id="admin-fipe-display">—</strong></div>
+                <div style="margin-top:10px;">Código FIPE: <strong id="admin-fipe-display">—</strong></div>
 
                 <div class="admin-row-inputs" style="margin-top:12px;">
                     <input type="text" id="admin-servico-nome" placeholder="Nome do serviço">
-                    <input type="text" id="admin-servico-hh" placeholder="HH (ex: 1.30 = 1h30min)" style="max-width:120px;">
-                    <input type="text" id="admin-servico-insumos" placeholder="Insumos (separados por vírgula)" style="flex:2;">
+                    <input type="text" id="admin-servico-hh" placeholder="HH (ex: 1.30)" style="max-width:120px;">
+                    <input type="text" id="admin-servico-insumos" placeholder="Insumos (vírgula)" style="flex:2;">
                     <button class="btn-sm success" onclick="adminAddSingleServico()">+ Adicionar</button>
                 </div>
                 <div style="margin-top:10px;">
-                    <textarea id="admin-servico-bulk" rows="5" class="auto-expand" placeholder="Adicione serviços em massa (um por linha) no formato: Nome do Serviço, HH, Insumo1, Insumo2...&#10;Exemplo:&#10;Troca de óleo, 0.30, Óleo motor, Filtro&#10;Alinhamento, 1.20&#10;Revisão completa, 2.00, Filtro de ar, Velas"></textarea>
-                    <button class="btn-sm primary" onclick="adminAddBulkServicos()" style="margin-top:6px;">Adicionar em Lote</button>
+                    <textarea id="admin-servico-bulk" rows="4" placeholder="Em lote: Nome, HH, Insumo1, Insumo2..."></textarea>
+                    <button class="btn-sm primary" onclick="adminAddBulkServicos()" style="margin-top:6px;">Adicionar Lote</button>
                 </div>
-                <p class="admin-hint">
-                    ⏱ Formato do tempo: <strong>1.00</strong> = 1 hora, <strong>1.30</strong> = 1h30min, <strong>45</strong> = 45 minutos, <strong>0.30</strong> = 30 minutos.<br>
-                    🔧 Insumos: separe por vírgula (ex: Óleo, Filtro, Junta).
-                </p>
+                <p class="admin-hint">Formato HH: 1.30 = 1h30min | 0.30 = 30min</p>
                 <div style="max-height:200px;overflow-y:auto;margin-top:10px;">
                     <table class="admin-table" id="admin-servicos-veiculo-table">
                         <thead><tr><th>Serviço</th><th>HH</th><th>Insumos</th><th>Ação</th></tr></thead>
@@ -1213,13 +347,10 @@
     </div>
 
     <!-- CONTEÚDO PRINCIPAL -->
-    <div class="app-container" id="app-container">
+    <div class="app-container">
         <main>
             <section>
-                <div class="section-title">
-                    <svg width="16" height="16" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="8.5" cy="10" r="1.5" fill="currentColor"/><circle cx="15.5" cy="10" r="1.5" fill="currentColor"/></svg>
-                    Tipo de Veículo
-                </div>
+                <div class="section-title">🚗 Tipo de Veículo</div>
                 <div class="tipo-veiculo-selector">
                     <button class="btn-tipo-veiculo active" data-tipo="carros" onclick="setTipoVeiculo('carros',this)">🚗 Carros</button>
                     <button class="btn-tipo-veiculo" data-tipo="motos" onclick="setTipoVeiculo('motos',this)">🏍 Motocicletas</button>
@@ -1227,70 +358,57 @@
                 </div>
             </section>
             <section>
-                <div class="section-title">
-                    <svg width="16" height="16" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" fill="none" stroke="currentColor" stroke-width="2"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2"/></svg>
-                    Identificação Dinâmica do Veículo
-                </div>
+                <div class="section-title">🔍 Identificação do Veículo</div>
                 <div class="fipe-grid">
-                    <div class="search-select-container" id="container-marca"><div class="search-select-label">Fabricante</div><button class="select-trigger" onclick="toggleDropdown('marca')"><span id="label-marca">Selecionar Marca...</span> ▼</button><div class="dropdown-menu" id="drop-marca"><div class="dropdown-search"><input type="text" placeholder="Filtrar Fabricante..." oninput="filterOptions('marca',this.value)"></div><div class="dropdown-options" id="options-marca"></div></div></div>
-                    <div class="search-select-container" id="container-modelo"><div class="search-select-label">Modelo</div><button class="select-trigger" id="btn-modelo" disabled onclick="toggleDropdown('modelo')"><span id="label-modelo">— Selecione a Marca —</span> ▼</button><div class="dropdown-menu" id="drop-modelo"><div class="dropdown-search"><input type="text" placeholder="Filtrar Modelo..." oninput="filterOptions('modelo',this.value)"></div><div class="dropdown-options" id="options-modelo"></div></div></div>
-                    <div class="search-select-container" id="container-ano"><div class="search-select-label">Ano / Versão</div><button class="select-trigger" id="btn-ano" disabled onclick="toggleDropdown('ano')"><span id="label-ano">— Selecione o Modelo —</span> ▼</button><div class="dropdown-menu" id="drop-ano"><div class="dropdown-search"><input type="text" placeholder="Filtrar Ano..." oninput="filterOptions('ano',this.value)"></div><div class="dropdown-options" id="options-ano"></div></div></div>
+                    <div class="search-select-container" id="container-marca"><div class="search-select-label">Fabricante</div><button class="select-trigger" onclick="toggleDropdown('marca')"><span id="label-marca">Selecionar Marca...</span> ▼</button><div class="dropdown-menu" id="drop-marca"><div class="dropdown-search"><input type="text" placeholder="Filtrar..." oninput="filterOptions('marca',this.value)"></div><div class="dropdown-options" id="options-marca"></div></div></div>
+                    <div class="search-select-container" id="container-modelo"><div class="search-select-label">Modelo</div><button class="select-trigger" id="btn-modelo" disabled><span id="label-modelo">— Selecione a Marca —</span> ▼</button><div class="dropdown-menu" id="drop-modelo"><div class="dropdown-search"><input type="text" placeholder="Filtrar..." oninput="filterOptions('modelo',this.value)"></div><div class="dropdown-options" id="options-modelo"></div></div></div>
+                    <div class="search-select-container" id="container-ano"><div class="search-select-label">Ano / Versão</div><button class="select-trigger" id="btn-ano" disabled><span id="label-ano">— Selecione o Modelo —</span> ▼</button><div class="dropdown-menu" id="drop-ano"><div class="dropdown-search"><input type="text" placeholder="Filtrar..." oninput="filterOptions('ano',this.value)"></div><div class="dropdown-options" id="options-ano"></div></div></div>
                 </div>
                 <div id="veic-info-box" class="veic-info-box" style="display:none;">
                     <div><div class="info-stat-title">FIPE Selecionado</div><div class="info-stat-value" id="info-nome-veiculo">-</div></div>
-                    <div><div class="info-stat-title">Código FIPE</div><div class="info-stat-value" id="info-codigo-fipe" style="font-family:monospace;">-</div></div>
+                    <div><div class="info-stat-title">Código FIPE</div><div class="info-stat-value" id="info-codigo-fipe">-</div></div>
                     <div><div class="info-stat-title">Combustível</div><div class="info-stat-value" id="info-combustivel">-</div></div>
-                    <div><div class="info-stat-title">Preço Médio Ref.</div><div class="info-stat-value" id="info-valor-fipe" style="color:var(--success);">-</div></div>
+                    <div><div class="info-stat-title">Preço Médio Ref.</div><div class="info-stat-value" id="info-valor-fipe">-</div></div>
                 </div>
             </section>
             <section>
-                <div class="section-title">
-                    <svg width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="12 6 12 12 16 14" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-                    Configuração de Tarifas
-                </div>
+                <div class="section-title">⚙️ Configuração de Tarifas</div>
                 <div class="config-grid">
-                    <div><div class="search-select-label" style="margin-bottom:8px;">Perfil da Tabela</div><div class="tabela-btn-group"><button class="btn-tabela active" data-tabela="verde" onclick="setTabela('verde')"><strong>Tabela Verde</strong><span style="font-size:10px;">Padrão (100%)</span></button><button class="btn-tabela" data-tabela="amarela" onclick="setTabela('amarela')"><strong>Tabela Amarela</strong><span style="font-size:10px;">Frotas (-20%)</span></button><button class="btn-tabela" data-tabela="vermelha" onclick="setTabela('vermelha')"><strong>Tabela Vermelha</strong><span style="font-size:10px;">Especial (-35%)</span></button></div></div>
-                    <div class="input-hh-container"><div class="search-select-label">Valor Base HH (Hora-Homem)</div><div class="input-hh-wrapper"><span class="input-hh-prefix">R$</span><input type="text" id="input-hh-rate" value="150,00" oninput="handleCurrencyMask(this)"></div></div>
+                    <div><div class="search-select-label">Perfil da Tabela</div><div class="tabela-btn-group"><button class="btn-tabela active" data-tabela="verde" onclick="setTabela('verde')"><strong>Tabela Verde</strong><span>Padrão (100%)</span></button><button class="btn-tabela" data-tabela="amarela" onclick="setTabela('amarela')"><strong>Tabela Amarela</strong><span>Frotas (-20%)</span></button><button class="btn-tabela" data-tabela="vermelha" onclick="setTabela('vermelha')"><strong>Tabela Vermelha</strong><span>Especial (-35%)</span></button></div></div>
+                    <div class="input-hh-container"><div class="search-select-label">Valor Base HH</div><div class="input-hh-wrapper"><span class="input-hh-prefix">R$</span><input type="text" id="input-hh-rate" value="150,00" oninput="handleCurrencyMask(this)"></div></div>
                 </div>
             </section>
-            <section style="margin-bottom:0;">
-                <div class="section-title">
-                    <svg width="16" height="16" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-                    Catálogo de Mão de Obra <span id="servicos-origem-label" style="font-size:10px;color:var(--text-muted);font-weight:400;"></span>
-                </div>
-                <div class="catalogo-controls"><input type="text" class="input-busca" id="input-busca" placeholder="🔍 Digite para pesquisar serviços..." oninput="handleFilterChange()"><div class="categories-container" id="categories-container"></div></div>
+            <section>
+                <div class="section-title">📋 Catálogo de Mão de Obra <span id="servicos-origem-label" style="font-size:10px;color:gray;"></span></div>
+                <div class="catalogo-controls"><input type="text" class="input-busca" id="input-busca" placeholder="🔍 Pesquisar serviço..." oninput="handleFilterChange()"><div class="categories-container" id="categories-container"></div></div>
                 <div class="table-wrapper" id="table-wrapper">
                     <table>
-                        <thead>
-                            <tr><th>Cód</th><th>Descrição do Serviço / Insumos</th><th style="text-align:right;">HH Real</th><th style="text-align:right;">Preço M.O.</th><th style="text-align:center;">Ações</th></tr>
-                        </thead>
+                        <thead><tr><th>Cód</th><th>Descrição / Insumos</th><th style="text-align:right;">HH Real</th><th style="text-align:right;">Preço M.O.</th><th style="text-align:center;">Ações</th></tr></thead>
                         <tbody id="lista-servicos"></tbody>
                     </table>
                 </div>
             </section>
         </main>
-        <aside class="sidebar" id="orcamento-sidebar">
+        <aside class="sidebar">
             <div class="sidebar-header"><div class="sidebar-title">📋 Resumo do Orçamento</div><button class="btn-clear-orc" onclick="clearOrcamento()">Limpar Tudo</button></div>
             <div id="veiculo-atual-orc" style="padding:10px 15px;font-size:11px;background:#e6f5ff;border-bottom:1px solid var(--border-color);display:none;"><strong>Veículo:</strong> <span id="txt-veic-orc">-</span></div>
             <div class="orc-items" id="orc-items-container"><div class="orc-empty-state"><span>📋</span><p>Nenhum serviço adicionado.</p></div></div>
             <div class="sidebar-footer">
                 <div class="totais-list"><div class="total-row"><span>Tempo Alocado:</span><span id="total-hh-acumulado">0 min</span></div><div class="total-row"><span>Qtde Itens:</span><span id="total-itens-count">0</span></div><div class="total-row final"><span>Total Geral:</span><span id="total-financeiro-orc">R$ 0,00</span></div></div>
-                <button class="btn-print" onclick="printOrcamento()">🖨 Gerar Orçamento Técnico</button>
+                <button class="btn-print" onclick="printOrcamento()">🖨 Gerar Orçamento</button>
                 <button class="btn-download-pdf" onclick="downloadPDF()">📥 Baixar PDF</button>
-                <button class="btn-share-wa" onclick="shareWhatsApp()">📱 Compartilhar no WhatsApp</button>
+                <button class="btn-share-wa" onclick="shareWhatsApp()">📱 Compartilhar WhatsApp</button>
             </div>
         </aside>
     </div>
 
     <script>
-        // ==================== SUPABASE CONFIG ====================
+        // ==================== SUPABASE CONFIG (direta, sem login) ====================
         const SUPABASE_URL = "https://qrgodrxylqytjuyelqsv.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_lWqBRFL186ePIt9mkXs2sg_ny8syDQd";
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        const WHATSAPP_ADMIN = "5583986737667";
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Dados globais
-        let currentUser = null;
+        // ==================== DADOS GLOBAIS ====================
         let orcamento = [];
         let tipoVeiculoAtivo = 'carros';
         let tabelaAtiva = "verde";
@@ -1298,13 +416,12 @@
         let buscaTexto = "";
         let itensExibidosCount = 10;
         let servicosFiltradosCache = [];
-        let servicosExclusivosAtivos = [];
 
         // Dados FIPE
         let marcasData = [], modelosData = [], anosData = [];
         let selMarca = null, selModelo = null, selAno = null, veiculoDetalhes = null;
 
-        // Catálogo base interno (fallback)
+        // Serviços base (fallback)
         const BASE_SERVICOS = [
             { id:"M001", cat:"Motor", nome:"Troca de óleo + filtro", hh:0.5, pecas:["Óleo motor","Filtro de óleo"] },
             { id:"M002", cat:"Motor", nome:"Troca de correia dentada", hh:2.5, pecas:["Correia dentada","Tensor","Rolo guia"] },
@@ -1318,31 +435,30 @@
         const REGRAS_MARCAS = { "CHEVROLET":{multHH:1.0,pecasExtras:[]}, "FORD":{multHH:1.15,pecasExtras:["Parafusos estruturais novos"]}, "HONDA":{multHH:1.20,pecasExtras:["Arruelas genuínas"]} };
         const TABELAS = { verde:1.00, amarela:0.80, vermelha:0.65 };
 
-        // ==================== FUNÇÕES AUXILIARES ====================
+        // ==================== AUXILIARES ====================
         function fmtBRL(v) { return Number(v).toLocaleString("pt-BR",{style:"currency",currency:"BRL"}); }
         function parseBRL(str) { return parseFloat(str.replace(/[^\d,]/g,"").replace(",","."))||0; }
         function fmtHH(h) { if(h<1) return `${Math.round(h*60)} min`; return `${h.toFixed(1).replace(".",",")} h`; }
         function parseClockToHours(str) {
             str = str.trim().replace(',', '.');
             if (!str) return NaN;
-            const parts = str.split('.');
+            let parts = str.split('.');
             if (parts.length === 1) {
-                const mins = parseInt(parts[0], 10);
-                if (isNaN(mins) || mins < 0) return NaN;
-                if (mins >= 60) return mins / 60;
+                let mins = parseInt(parts[0],10);
+                if (isNaN(mins)) return NaN;
+                if (mins >= 60) return mins/60;
                 return mins;
             } else {
-                const hh = parseInt(parts[0], 10);
-                const mm = parseInt(parts[1], 10);
-                if (isNaN(hh) || isNaN(mm) || mm >= 60) return NaN;
-                return hh + mm / 60;
+                let hh = parseInt(parts[0],10), mm = parseInt(parts[1],10);
+                if (isNaN(hh)||isNaN(mm)||mm>=60) return NaN;
+                return hh + mm/60;
             }
         }
         function hoursToClock(h) {
-            if (isNaN(h) || h < 0) return '0.00';
-            const hours = Math.floor(h);
-            const minutes = Math.round((h - hours) * 60);
-            return `${hours}.${minutes.toString().padStart(2, '0')}`;
+            if (isNaN(h)||h<0) return '0.00';
+            let hours = Math.floor(h);
+            let minutes = Math.round((h - hours)*60);
+            return `${hours}.${minutes.toString().padStart(2,'0')}`;
         }
         function handleCurrencyMask(input) {
             let v = input.value.replace(/\D/g,"");
@@ -1354,370 +470,68 @@
         }
         function getRegraMarcaAtiva() {
             if(!selMarca) return {multHH:1.0,pecasExtras:[]};
-            const c = Object.keys(REGRAS_MARCAS).find(m=>selMarca.nome.toUpperCase().includes(m));
+            let c = Object.keys(REGRAS_MARCAS).find(m=>selMarca.nome.toUpperCase().includes(m));
             return c ? REGRAS_MARCAS[c] : {multHH:1.0,pecasExtras:[]};
         }
 
-        // ==================== AUTENTICAÇÃO ====================
-        async function hashPassword(password) {
-            return await bcrypt.hash(password, 10);
-        }
-        async function verifyPassword(password, hash) {
-            return await bcrypt.compare(password, hash);
-        }
-
-        async function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value.trim();
-            const senha = document.getElementById('login-senha').value;
-            const errSpan = document.getElementById('login-error');
-            errSpan.textContent = '';
-
-            const { data: users, error } = await supabaseClient
-                .from('users')
-                .select('id, nome, email, senha_hash, tipo')
-                .eq('email', email);
-            if (error || !users || users.length === 0) {
-                errSpan.textContent = 'E-mail ou senha inválidos.';
-                return;
-            }
-            const user = users[0];
-            const valid = await verifyPassword(senha, user.senha_hash);
-            if (!valid) {
-                errSpan.textContent = 'E-mail ou senha inválidos.';
-                return;
-            }
-            currentUser = { id: user.id, nome: user.nome, email: user.email, tipo: user.tipo };
-            localStorage.setItem('hdm_logged', JSON.stringify(currentUser));
-            document.getElementById('login-overlay').style.display = 'none';
-            updateUIForUser();
-            processarServicosFiltrados();
-        }
-
-        async function handleCadastro(e) {
-            e.preventDefault();
-            const nome = document.getElementById('cad-nome').value.trim();
-            const email = document.getElementById('cad-email').value.trim();
-            const senha = document.getElementById('cad-senha').value;
-            const errSpan = document.getElementById('cad-error');
-            const succSpan = document.getElementById('cad-success');
-            errSpan.textContent = '';
-            succSpan.textContent = '';
-
-            const { data: existing } = await supabaseClient.from('users').select('email').eq('email', email);
-            if (existing && existing.length > 0) {
-                errSpan.textContent = 'E-mail já cadastrado.';
-                return;
-            }
-            const msg = encodeURIComponent(`*Solicitação de Cadastro - HoraDoMecânico*\n\nNome: ${nome}\nE-mail: ${email}\nSenha: ${senha}\n\n_Aprove este usuário no painel admin._`);
-            window.open(`https://wa.me/${WHATSAPP_ADMIN}?text=${msg}`, '_blank');
-            succSpan.textContent = 'Solicitação enviada ao administrador via WhatsApp!';
-            document.getElementById('form-cadastro').reset();
-        }
-
-        async function handleRecuperar(e) {
-            e.preventDefault();
-            const email = document.getElementById('rec-email').value.trim();
-            const errSpan = document.getElementById('rec-error');
-            const succSpan = document.getElementById('rec-success');
-            errSpan.textContent = '';
-            succSpan.textContent = '';
-
-            const { data: user, error } = await supabaseClient
-                .from('users')
-                .select('email')
-                .eq('email', email)
-                .single();
-            if (error || !user) {
-                errSpan.textContent = 'E-mail não encontrado.';
-                return;
-            }
-            const resetToken = btoa(JSON.stringify({ email, exp: Date.now() + 3600000 }));
-            const link = `${window.location.origin}/reset.html?token=${resetToken}`;
-            const msg = encodeURIComponent(`*Redefinição de senha - HoraDoMecânico*\n\nClique no link para criar uma nova senha: ${link}\n\nSe você não solicitou, ignore esta mensagem.`);
-            window.open(`https://wa.me/${WHATSAPP_ADMIN}?text=${msg}`, '_blank');
-            succSpan.textContent = 'Link de redefinição enviado para o WhatsApp do administrador. Entre em contato para recuperar sua senha.';
-        }
-
-        function handleLogout() {
-            currentUser = null;
-            localStorage.removeItem('hdm_logged');
-            document.getElementById('login-overlay').style.display = 'flex';
-            document.getElementById('btn-admin-header').style.display = 'none';
-            location.reload();
-        }
-
-        function updateUIForUser() {
-            const stored = localStorage.getItem('hdm_logged');
-            if (stored) {
-                currentUser = JSON.parse(stored);
-                document.getElementById('user-name-display').textContent = currentUser.nome;
-                document.getElementById('btn-admin-header').style.display = currentUser.tipo === 'admin' ? 'inline-flex' : 'none';
-                document.getElementById('login-overlay').style.display = 'none';
-            } else {
-                document.getElementById('login-overlay').style.display = 'flex';
-            }
-        }
-
-        // ==================== ADMIN: USUÁRIOS ====================
-        async function renderAdminUsers() {
-            const { data: users, error } = await supabaseClient.from('users').select('*');
-            if (error) return;
-            const tbody = document.getElementById('admin-users-tbody');
-            tbody.innerHTML = users.map(u => `
-                <tr>
-                    <td>${u.nome}</td>
-                    <td>${u.email}</td>
-                    <td>${u.tipo}</td>
-                    <td><button class="btn-sm danger" onclick="adminRemoveUser('${u.id}')">Remover</button></td>
-                </tr>
-            `).join('');
-        }
-
-        async function adminAddUser() {
-            const nome = document.getElementById('admin-new-name').value.trim();
-            const email = document.getElementById('admin-new-email').value.trim();
-            const senha = document.getElementById('admin-new-senha').value;
-            const tipo = document.getElementById('admin-new-tipo').value;
-            if (!nome || !email || !senha) { alert('Preencha todos os campos.'); return; }
-            const senha_hash = await hashPassword(senha);
-            const { error } = await supabaseClient.from('users').insert([{ nome, email, senha_hash, tipo }]);
-            if (error) { alert('Erro ao adicionar: ' + error.message); return; }
-            renderAdminUsers();
-            document.getElementById('admin-new-name').value = '';
-            document.getElementById('admin-new-email').value = '';
-            document.getElementById('admin-new-senha').value = '';
-        }
-
-        async function adminRemoveUser(userId) {
-            if (!confirm('Remover usuário?')) return;
-            const { data: admins } = await supabaseClient.from('users').select('id').eq('tipo', 'admin');
-            if (admins.length === 1 && admins[0].id === userId) {
-                alert('Não é possível remover o único administrador.');
-                return;
-            }
-            await supabaseClient.from('users').delete().eq('id', userId);
-            renderAdminUsers();
-        }
-
-        // ==================== ADMIN: SERVIÇOS POR VEÍCULO ====================
-        let adminFipeCode = null;
-        let adminTipo = 'carros';
-        let adminMarca = null, adminModelo = null, adminAno = null;
-        let adminMarcasData = [], adminModelosData = [], adminAnosData = [];
-
-        async function setAdminTipo(tipo, btn) {
-            adminTipo = tipo;
-            document.querySelectorAll('#admin-tipo-selector .btn-tipo-veiculo').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            adminMarca = adminModelo = adminAno = null;
-            adminFipeCode = null;
-            document.getElementById('admin-label-marca').innerText = 'Selecionar Marca...';
-            document.getElementById('admin-label-modelo').innerText = '—';
-            document.getElementById('admin-label-ano').innerText = '—';
-            document.getElementById('admin-btn-modelo').disabled = true;
-            document.getElementById('admin-btn-ano').disabled = true;
-            await adminLoadMarcas();
-        }
-        function adminApiBase() { return `https://parallelum.com.br/fipe/api/v1/${adminTipo}`; }
-        async function adminLoadMarcas() {
-            const r = await fetch(`${adminApiBase()}/marcas`);
-            adminMarcasData = await r.json();
-            adminPopulateDropdown('marca', adminMarcasData);
-        }
-        async function adminLoadModelos(marcaId) {
-            const r = await fetch(`${adminApiBase()}/marcas/${marcaId}/modelos`);
-            const d = await r.json();
-            adminModelosData = d.modelos;
-            adminPopulateDropdown('modelo', adminModelosData);
-            document.getElementById('admin-btn-modelo').disabled = false;
-        }
-        async function adminLoadAnos(marcaId, modeloId) {
-            const r = await fetch(`${adminApiBase()}/marcas/${marcaId}/modelos/${modeloId}/anos`);
-            adminAnosData = await r.json();
-            adminPopulateDropdown('ano', adminAnosData);
-            document.getElementById('admin-btn-ano').disabled = false;
-        }
-        async function adminLoadVeiculoDetalhes(marcaId, modeloId, anoId) {
-            const r = await fetch(`${adminApiBase()}/marcas/${marcaId}/modelos/${modeloId}/anos/${anoId}`);
-            const d = await r.json();
-            adminFipeCode = d.CodigoFipe;
-            document.getElementById('admin-fipe-display').textContent = adminFipeCode;
-            renderAdminServicosVeiculo();
-        }
-        function adminPopulateDropdown(type, list) {
-            const container = document.getElementById(`admin-options-${type}`);
-            container.innerHTML = '';
-            list.forEach(item => {
-                const btn = document.createElement('button');
-                btn.className = 'dropdown-option';
-                btn.innerText = item.nome;
-                btn.onclick = () => adminSelectOption(type, item.codigo, item.nome);
-                container.appendChild(btn);
-            });
-        }
-        window.adminFilterOptions = function(type, q) {
-            let list = type === 'marca' ? adminMarcasData : (type === 'modelo' ? adminModelosData : adminAnosData);
-            adminPopulateDropdown(type, list.filter(i => i.nome.toLowerCase().includes(q.toLowerCase())));
-        };
-        window.toggleAdminDropdown = function(type) {
-            const el = document.getElementById(`admin-drop-${type}`);
-            const vis = el.style.display === 'flex';
-            document.querySelectorAll('#admin-modal .dropdown-menu').forEach(m => m.style.display = 'none');
-            if (!vis) el.style.display = 'flex';
-        };
-        function adminSelectOption(type, codigo, nome) {
-            document.getElementById(`admin-label-${type}`).innerText = nome;
-            document.querySelectorAll('#admin-modal .dropdown-menu').forEach(m => m.style.display = 'none');
-            if (type === 'marca') {
-                adminMarca = { codigo, nome };
-                adminModelo = null; adminAno = null; adminFipeCode = null;
-                document.getElementById('admin-btn-modelo').disabled = true;
-                document.getElementById('admin-btn-ano').disabled = true;
-                document.getElementById('admin-label-modelo').innerText = '—';
-                document.getElementById('admin-label-ano').innerText = '—';
-                adminLoadModelos(codigo);
-            } else if (type === 'modelo') {
-                adminModelo = { codigo, nome };
-                adminAno = null; adminFipeCode = null;
-                document.getElementById('admin-btn-ano').disabled = true;
-                document.getElementById('admin-label-ano').innerText = '—';
-                adminLoadAnos(adminMarca.codigo, codigo);
-            } else if (type === 'ano') {
-                adminAno = { codigo, nome };
-                adminLoadVeiculoDetalhes(adminMarca.codigo, adminModelo.codigo, codigo);
-            }
-        }
-
-        async function renderAdminServicosVeiculo() {
-            if (!adminFipeCode) {
-                document.getElementById('admin-servicos-veiculo-tbody').innerHTML = '<tr><td colspan="4">Selecione um veículo.</td></tr>';
-                return;
-            }
-            const { data: servicos, error } = await supabaseClient
-                .from('servicos_veiculo')
-                .select('*')
-                .eq('fipe_code', adminFipeCode);
-            if (error) return;
-            const tbody = document.getElementById('admin-servicos-veiculo-tbody');
-            tbody.innerHTML = servicos.map(s => `
-                <tr>
-                    <td>${s.servico_nome}</td>
-                    <td>${hoursToClock(s.hh)}h</td>
-                    <td>${(s.pecas || []).join(', ')}</td>
-                    <td><button class="btn-sm danger" onclick="adminRemoveServico('${s.id}')">✕</button></td>
-                </tr>
-            `).join('');
-        }
-
-        window.adminAddSingleServico = async function() {
-            if (!adminFipeCode) { alert('Selecione um veículo primeiro.'); return; }
-            const nome = document.getElementById('admin-servico-nome').value.trim();
-            const hhStr = document.getElementById('admin-servico-hh').value.trim();
-            const insumosStr = document.getElementById('admin-servico-insumos').value.trim();
-            const hh = parseClockToHours(hhStr);
-            if (!nome || isNaN(hh) || hh <= 0) { alert('Nome e HH válidos (ex: 1.30).'); return; }
-            const pecas = insumosStr ? insumosStr.split(',').map(s => s.trim()).filter(s => s) : [];
-            const { error } = await supabaseClient.from('servicos_veiculo').insert([{
-                fipe_code: adminFipeCode,
-                servico_nome: nome,
-                hh: hh,
-                pecas: pecas
-            }]);
-            if (error) { alert('Erro ao salvar: ' + error.message); return; }
-            document.getElementById('admin-servico-nome').value = '';
-            document.getElementById('admin-servico-hh').value = '';
-            document.getElementById('admin-servico-insumos').value = '';
-            renderAdminServicosVeiculo();
-            if (veiculoDetalhes && veiculoDetalhes.CodigoFipe === adminFipeCode) processarServicosFiltrados();
-        };
-
-        window.adminAddBulkServicos = async function() {
-            if (!adminFipeCode) { alert('Selecione um veículo.'); return; }
-            const raw = document.getElementById('admin-servico-bulk').value.trim();
-            if (!raw) return;
-            const lines = raw.split('\n').filter(l => l.trim());
-            let added = 0;
-            for (const line of lines) {
-                const parts = line.split(',').map(s => s.trim());
-                const nome = parts[0];
-                const hhStr = parts[1] || '';
-                const hh = parseClockToHours(hhStr);
-                const pecas = parts.slice(2).filter(p => p);
-                if (nome && !isNaN(hh) && hh > 0) {
-                    await supabaseClient.from('servicos_veiculo').insert([{
-                        fipe_code: adminFipeCode,
-                        servico_nome: nome,
-                        hh: hh,
-                        pecas: pecas
-                    }]);
-                    added++;
-                }
-            }
-            document.getElementById('admin-servico-bulk').value = '';
-            renderAdminServicosVeiculo();
-            if (veiculoDetalhes && veiculoDetalhes.CodigoFipe === adminFipeCode) processarServicosFiltrados();
-            if (added === 0 && lines.length > 0) alert('Nenhum serviço válido.');
-        };
-
-        window.adminRemoveServico = async function(servicoId) {
-            await supabaseClient.from('servicos_veiculo').delete().eq('id', servicoId);
-            renderAdminServicosVeiculo();
-            if (veiculoDetalhes && veiculoDetalhes.CodigoFipe === adminFipeCode) processarServicosFiltrados();
-        };
-
-        // ==================== CATÁLOGO DE SERVIÇOS (FIPE + SUPABASE) ====================
+        // ==================== SERVIÇOS DO SUPABASE ====================
         async function getServicosParaVeiculoAtual() {
             if (!veiculoDetalhes || !veiculoDetalhes.CodigoFipe) return BASE_SERVICOS;
-            const { data: servicosDB, error } = await supabaseClient
+            let { data: servicosDB, error } = await supabase
                 .from('servicos_veiculo')
                 .select('*')
                 .eq('fipe_code', veiculoDetalhes.CodigoFipe);
-            if (error) return BASE_SERVICOS;
-            const servicosExclusivos = servicosDB.map(s => ({
+            if (error) {
+                console.error("Erro ao buscar serviços:", error);
+                return BASE_SERVICOS;
+            }
+            if (!servicosDB.length) {
+                document.getElementById('servicos-origem-label').innerText = '(serviços base)';
+                return BASE_SERVICOS;
+            }
+            let exclusivos = servicosDB.map(s => ({
                 id: s.id,
                 cat: 'Exclusivo',
                 nome: s.servico_nome,
                 hh: parseFloat(s.hh),
                 pecas: s.pecas || []
             }));
-            servicosExclusivosAtivos = servicosExclusivos;
-            document.getElementById('servicos-origem-label').textContent = servicosExclusivos.length ? '(serviços exclusivos deste veículo)' : '(serviços base)';
-            return servicosExclusivos.length ? servicosExclusivos : BASE_SERVICOS;
+            document.getElementById('servicos-origem-label').innerText = `(${exclusivos.length} serviços exclusivos)`;
+            return exclusivos;
         }
 
         async function processarServicosFiltrados() {
-            const servicos = await getServicosParaVeiculoAtual();
+            let servicos = await getServicosParaVeiculoAtual();
             buildCategories(servicos);
-            const filtrados = servicos.filter(s =>
+            let filtrados = servicos.filter(s =>
                 (categoriaAtiva === 'Todos' || s.cat === categoriaAtiva) &&
-                (s.nome.toLowerCase().includes(buscaTexto) || (s.id || '').toLowerCase().includes(buscaTexto))
+                (s.nome.toLowerCase().includes(buscaTexto) || (s.id||'').toLowerCase().includes(buscaTexto))
             ).map(s => calcularDadosServicoParaVeiculo(s));
             servicosFiltradosCache = filtrados;
             renderCatalogo();
         }
 
-        function calcularDadosServicoParaVeiculo(s, customHH = null) {
-            const regra = getRegraMarcaAtiva();
-            const hhBase = s.hh * regra.multHH;
-            const hhCalc = customHH !== null ? customHH : hhBase;
-            const rate = parseBRL(document.getElementById('input-hh-rate').value);
-            const preco = hhCalc * rate * TABELAS[tabelaAtiva];
-            const pecas = [...s.pecas];
-            if (pecas.length && regra.pecasExtras.length) pecas.push(...regra.pecasExtras);
-            return { ...s, hhReal: hhCalc, precoMO: preco, pecasReais: pecas };
+        function calcularDadosServicoParaVeiculo(s, customHH=null) {
+            let regra = getRegraMarcaAtiva();
+            let hhBase = s.hh * regra.multHH;
+            let hhCalc = customHH !== null ? customHH : hhBase;
+            let rate = parseBRL(document.getElementById('input-hh-rate').value);
+            let preco = hhCalc * rate * TABELAS[tabelaAtiva];
+            let pecas = [...s.pecas];
+            if(pecas.length && regra.pecasExtras.length) pecas.push(...regra.pecasExtras);
+            return {...s, hhReal: hhCalc, precoMO: preco, pecasReais: pecas};
         }
 
         function buildCategories(servicos) {
-            const cats = ["Todos", ...new Set(servicos.map(s => s.cat))];
-            const cont = document.getElementById('categories-container');
+            let cats = ["Todos", ...new Set(servicos.map(s=>s.cat))];
+            let cont = document.getElementById('categories-container');
             cont.innerHTML = '';
             cats.forEach(c => {
-                const b = document.createElement('button');
-                b.className = `btn-cat ${categoriaAtiva === c ? 'active' : ''}`;
+                let b = document.createElement('button');
+                b.className = `btn-cat ${categoriaAtiva===c ? 'active' : ''}`;
                 b.innerText = c;
                 b.onclick = () => {
-                    document.querySelectorAll('.btn-cat').forEach(x => x.classList.remove('active'));
+                    document.querySelectorAll('.btn-cat').forEach(x=>x.classList.remove('active'));
                     b.classList.add('active');
                     categoriaAtiva = c;
                     handleFilterChange();
@@ -1734,18 +548,18 @@
         }
 
         function renderCatalogo() {
-            const tbody = document.getElementById('lista-servicos');
+            let tbody = document.getElementById('lista-servicos');
             tbody.innerHTML = '';
-            const chunk = servicosFiltradosCache.slice(0, itensExibidosCount);
-            if (!chunk.length) {
+            let chunk = servicosFiltradosCache.slice(0, itensExibidosCount);
+            if(!chunk.length){
                 tbody.innerHTML = '<tr><td colspan="5">Nenhum serviço encontrado.</td></tr>';
                 return;
             }
             chunk.forEach(s => {
-                const tr = document.createElement('tr');
+                let tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td>${s.id || '-'}</td>
-                    <td><div>${s.nome}</div><div class="insumos-badges">${(s.pecasReais || []).map(p => `<span class="badge-insumo">${p}</span>`).join('') || '<span class="badge-insumo" style="background:#fff;border:1px dashed #dcdde1;">Sem insumos</span>'}</div></td>
+                    <td>${s.id||'-'}</td>
+                    <td><div>${s.nome}</div><div class="insumos-badges">${(s.pecasReais||[]).map(p=>`<span class="badge-insumo">${p}</span>`).join('')||'<span class="badge-insumo">Sem insumos</span>'}</div></td>
                     <td style="text-align:right">${fmtHH(s.hhReal)}</td>
                     <td style="text-align:right;font-weight:700;color:var(--primary)">${fmtBRL(s.precoMO)}</td>
                     <td style="text-align:center"><button class="btn-add-servico" onclick="addServico('${s.id}')">+ Incluir</button></td>
@@ -1756,36 +570,36 @@
 
         function setupInfiniteScroll() {
             document.getElementById('table-wrapper').addEventListener('scroll', () => {
-                const w = document.getElementById('table-wrapper');
-                if (w.scrollTop + w.clientHeight >= w.scrollHeight - 20 && itensExibidosCount < servicosFiltradosCache.length) {
+                let w = document.getElementById('table-wrapper');
+                if(w.scrollTop + w.clientHeight >= w.scrollHeight - 20 && itensExibidosCount < servicosFiltradosCache.length) {
                     itensExibidosCount += 10;
                     renderCatalogo();
                 }
             });
         }
 
-        // ==================== SELEÇÃO DE VEÍCULO (FIPE) ====================
+        // ==================== FIPE (API) ====================
         function getApiBaseUrl() { return `https://parallelum.com.br/fipe/api/v1/${tipoVeiculoAtivo}`; }
         async function loadMarcas() {
-            const r = await fetch(`${getApiBaseUrl()}/marcas`);
+            let r = await fetch(`${getApiBaseUrl()}/marcas`);
             marcasData = await r.json();
             populateDropdown('marca', marcasData);
         }
         async function loadModelos(marcaId) {
-            const r = await fetch(`${getApiBaseUrl()}/marcas/${marcaId}/modelos`);
-            const d = await r.json();
+            let r = await fetch(`${getApiBaseUrl()}/marcas/${marcaId}/modelos`);
+            let d = await r.json();
             modelosData = d.modelos;
             populateDropdown('modelo', modelosData);
             enableDropdown('modelo');
         }
         async function loadAnos(marcaId, modeloId) {
-            const r = await fetch(`${getApiBaseUrl()}/marcas/${marcaId}/modelos/${modeloId}/anos`);
+            let r = await fetch(`${getApiBaseUrl()}/marcas/${marcaId}/modelos/${modeloId}/anos`);
             anosData = await r.json();
             populateDropdown('ano', anosData);
             enableDropdown('ano');
         }
         async function loadDadosCompletosVeiculo(marcaId, modeloId, anoId) {
-            const r = await fetch(`${getApiBaseUrl()}/marcas/${marcaId}/modelos/${modeloId}/anos/${anoId}`);
+            let r = await fetch(`${getApiBaseUrl()}/marcas/${marcaId}/modelos/${modeloId}/anos/${anoId}`);
             veiculoDetalhes = await r.json();
             document.getElementById('info-nome-veiculo').innerText = `${veiculoDetalhes.Marca} ${veiculoDetalhes.Modelo}`;
             document.getElementById('info-codigo-fipe').innerText = veiculoDetalhes.CodigoFipe;
@@ -1798,10 +612,10 @@
             renderOrcamento();
         }
         function populateDropdown(type, list) {
-            const c = document.getElementById(`options-${type}`);
+            let c = document.getElementById(`options-${type}`);
             c.innerHTML = '';
             list.forEach(i => {
-                const b = document.createElement('button');
+                let b = document.createElement('button');
                 b.className = 'dropdown-option';
                 b.innerText = i.nome;
                 b.onclick = () => selectOption(type, i.codigo, i.nome);
@@ -1809,57 +623,55 @@
             });
         }
         window.filterOptions = function(type, q) {
-            const list = type === 'marca' ? marcasData : type === 'modelo' ? modelosData : anosData;
-            populateDropdown(type, list.filter(i => i.nome.toLowerCase().includes(q.toLowerCase())));
+            let list = type==='marca'?marcasData:type==='modelo'?modelosData:anosData;
+            populateDropdown(type, list.filter(i=>i.nome.toLowerCase().includes(q.toLowerCase())));
         };
         window.toggleDropdown = function(type) {
-            const el = document.getElementById(`drop-${type}`);
-            const vis = el.style.display === 'flex';
-            document.querySelectorAll('.dropdown-menu').forEach(m => m.style.display = 'none');
-            if (!vis) el.style.display = 'flex';
+            let el = document.getElementById(`drop-${type}`);
+            let vis = el.style.display === 'flex';
+            document.querySelectorAll('.dropdown-menu').forEach(m=>m.style.display='none');
+            if(!vis) el.style.display = 'flex';
         };
         function enableDropdown(type) { document.getElementById(`btn-${type}`).disabled = false; document.getElementById(`label-${type}`).innerText = 'Selecionar...'; }
-        function disableDropdown(type) { const btn = document.getElementById(`btn-${type}`); if(btn){btn.disabled=true; document.getElementById(`label-${type}`).innerText = type==='modelo'?'— Selecione a Marca —':'— Selecione o Modelo —';} }
+        function disableDropdown(type) { let btn = document.getElementById(`btn-${type}`); if(btn) { btn.disabled=true; document.getElementById(`label-${type}`).innerText = type==='modelo'?'— Selecione a Marca —':'— Selecione o Modelo —';} }
         function selectOption(type, codigo, nome) {
             document.getElementById(`label-${type}`).innerText = nome;
             closeAllDropdowns();
-            if (type === 'marca') {
-                selMarca = { codigo, nome };
-                selModelo = null; selAno = null; veiculoDetalhes = null;
+            if(type === 'marca') {
+                selMarca = {codigo,nome}; selModelo=null; selAno=null; veiculoDetalhes=null;
                 disableDropdown('modelo'); disableDropdown('ano');
-                document.getElementById('veic-info-box').style.display = 'none';
-                document.getElementById('veiculo-atual-orc').style.display = 'none';
+                document.getElementById('veic-info-box').style.display='none';
+                document.getElementById('veiculo-atual-orc').style.display='none';
                 loadModelos(codigo);
-            } else if (type === 'modelo') {
-                selModelo = { codigo, nome };
-                selAno = null; veiculoDetalhes = null;
+            } else if(type === 'modelo') {
+                selModelo = {codigo,nome}; selAno=null; veiculoDetalhes=null;
                 disableDropdown('ano');
-                document.getElementById('veic-info-box').style.display = 'none';
-                document.getElementById('veiculo-atual-orc').style.display = 'none';
+                document.getElementById('veic-info-box').style.display='none';
+                document.getElementById('veiculo-atual-orc').style.display='none';
                 loadAnos(selMarca.codigo, codigo);
-            } else if (type === 'ano') {
-                selAno = { codigo, nome };
+            } else if(type === 'ano') {
+                selAno = {codigo,nome};
                 loadDadosCompletosVeiculo(selMarca.codigo, selModelo.codigo, codigo);
             }
             processarServicosFiltrados();
         }
-        function closeAllDropdowns() { document.querySelectorAll('.dropdown-menu').forEach(m => m.style.display = 'none'); }
+        function closeAllDropdowns() { document.querySelectorAll('.dropdown-menu').forEach(m=>m.style.display='none'); }
 
         window.setTipoVeiculo = function(tipo, btn) {
             tipoVeiculoAtivo = tipo;
-            document.querySelectorAll('.app-container .btn-tipo-veiculo').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.app-container .btn-tipo-veiculo').forEach(b=>b.classList.remove('active'));
             btn.classList.add('active');
-            selMarca = null; selModelo = null; selAno = null; veiculoDetalhes = null;
+            selMarca=null; selModelo=null; selAno=null; veiculoDetalhes=null;
             disableDropdown('modelo'); disableDropdown('ano');
-            document.getElementById('veic-info-box').style.display = 'none';
-            document.getElementById('veiculo-atual-orc').style.display = 'none';
+            document.getElementById('veic-info-box').style.display='none';
+            document.getElementById('veiculo-atual-orc').style.display='none';
             loadMarcas();
             processarServicosFiltrados();
         };
 
         window.setTabela = function(t) {
             tabelaAtiva = t;
-            document.querySelectorAll('.btn-tabela').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.btn-tabela').forEach(b=>b.classList.remove('active'));
             document.querySelector(`[data-tabela="${t}"]`).classList.add('active');
             processarServicosFiltrados();
             renderOrcamento();
@@ -1867,89 +679,89 @@
 
         // ==================== ORÇAMENTO ====================
         window.addServico = function(id) {
-            const serv = servicosFiltradosCache.find(s => s.id === id);
-            if (!serv) return;
-            const exist = orcamento.find(o => o.id === id);
-            if (exist) exist.qty += 1;
-            else orcamento.push({ id, qty: 1, customHH: null, customPreco: null, customInsumos: null, editMode: false });
+            let serv = servicosFiltradosCache.find(s=>s.id===id);
+            if(!serv) return;
+            let exist = orcamento.find(o=>o.id===id);
+            if(exist) exist.qty+=1;
+            else orcamento.push({id, qty:1, customHH:null, customPreco:null, customInsumos:null, editMode:false});
             renderOrcamento();
         };
-        window.removeServico = function(id) { orcamento = orcamento.filter(o => o.id !== id); renderOrcamento(); };
+        window.removeServico = function(id) { orcamento = orcamento.filter(o=>o.id!==id); renderOrcamento(); };
         window.changeQty = function(id, delta) {
-            const item = orcamento.find(o => o.id === id);
-            if (!item) return;
+            let item = orcamento.find(o=>o.id===id);
+            if(!item) return;
             item.qty += delta;
-            if (item.qty <= 0) removeServico(id);
+            if(item.qty<=0) removeServico(id);
             else renderOrcamento();
         };
-        window.clearOrcamento = function() { orcamento = []; renderOrcamento(); };
+        window.clearOrcamento = function() { orcamento=[]; renderOrcamento(); };
         window.toggleEditItem = function(id) {
-            const item = orcamento.find(o => o.id === id);
-            if (item) { item.editMode = !item.editMode; renderOrcamento(); }
+            let item = orcamento.find(o=>o.id===id);
+            if(item) { item.editMode = !item.editMode; renderOrcamento(); }
         };
         window.updateItemCustom = function(id, field, value) {
-            const item = orcamento.find(o => o.id === id);
-            if (!item) return;
-            if (field === 'customHH') { const parsed = parseClockToHours(value); item.customHH = isNaN(parsed) ? null : parsed; }
-            else if (field === 'customPreco') item.customPreco = value === '' ? null : parseBRL(value);
-            else if (field === 'customInsumos') item.customInsumos = value === '' ? null : value;
+            let item = orcamento.find(o=>o.id===id);
+            if(!item) return;
+            if(field==='customHH') { let parsed = parseClockToHours(value); item.customHH = isNaN(parsed)?null:parsed; }
+            else if(field==='customPreco') item.customPreco = value===''?null:parseBRL(value);
+            else if(field==='customInsumos') item.customInsumos = value===''?null:value;
             renderOrcamento();
         };
         window.recalcularValorItem = function(id) {
-            const item = orcamento.find(o => o.id === id);
-            if (!item) return;
-            const serv = servicosFiltradosCache.find(s => s.id === id);
-            if (!serv) return;
-            const hh = item.customHH !== null ? item.customHH : serv.hhReal;
-            const rate = parseBRL(document.getElementById('input-hh-rate').value);
+            let item = orcamento.find(o=>o.id===id);
+            if(!item) return;
+            let serv = servicosFiltradosCache.find(s=>s.id===id);
+            if(!serv) return;
+            let hh = item.customHH!==null ? item.customHH : serv.hhReal;
+            let rate = parseBRL(document.getElementById('input-hh-rate').value);
             item.customPreco = hh * rate * TABELAS[tabelaAtiva];
             renderOrcamento();
         };
         function getItemDetails(item) {
-            const serv = servicosFiltradosCache.find(s => s.id === item.id);
-            if (!serv) return null;
-            const regra = getRegraMarcaAtiva();
-            const hhBase = serv.hh * regra.multHH;
-            const hhReal = item.customHH !== null ? item.customHH : hhBase;
-            const rate = parseBRL(document.getElementById('input-hh-rate').value);
+            let serv = servicosFiltradosCache.find(s=>s.id===item.id);
+            if(!serv) return null;
+            let regra = getRegraMarcaAtiva();
+            let hhBase = serv.hh * regra.multHH;
+            let hhReal = item.customHH!==null ? item.customHH : hhBase;
+            let rate = parseBRL(document.getElementById('input-hh-rate').value);
             let precoUnit;
-            if (item.customPreco !== null) precoUnit = item.customPreco;
+            if(item.customPreco!==null) precoUnit = item.customPreco;
             else precoUnit = hhReal * rate * TABELAS[tabelaAtiva];
-            const insumos = item.customInsumos !== null ? item.customInsumos.split(',').map(s => s.trim()).filter(s => s) : [...(serv.pecasReais || [])];
-            const subtotal = precoUnit * item.qty;
-            return { ...serv, hhReal, precoUnit, subtotal, insumos };
+            let insumos = item.customInsumos!==null ? item.customInsumos.split(',').map(s=>s.trim()).filter(s=>s) : [...(serv.pecasReais||[])];
+            let subtotal = precoUnit * item.qty;
+            return {...serv, hhReal, precoUnit, subtotal, insumos};
         }
         function renderOrcamento() {
-            const container = document.getElementById('orc-items-container');
-            if (!orcamento.length) {
+            let container = document.getElementById('orc-items-container');
+            if(!orcamento.length){
                 container.innerHTML = '<div class="orc-empty-state"><span>📋</span><p>Nenhum serviço adicionado.</p></div>';
                 document.getElementById('total-hh-acumulado').innerText = '0 min';
                 document.getElementById('total-itens-count').innerText = '0';
                 document.getElementById('total-financeiro-orc').innerText = 'R$ 0,00';
                 return;
             }
-            let tHH = 0, tFin = 0, tItens = 0;
+            let tHH=0, tFin=0, tItens=0;
             container.innerHTML = '';
             orcamento.forEach(item => {
-                const det = getItemDetails(item);
-                if (!det) return;
+                let det = getItemDetails(item);
+                if(!det) return;
                 tHH += det.hhReal * item.qty;
                 tFin += det.subtotal;
                 tItens += item.qty;
-                const div = document.createElement('div');
+                let div = document.createElement('div');
                 div.className = 'orc-item';
-                if (item.editMode) {
-                    const insumoList = item.customInsumos !== null ? item.customInsumos.split(',').map(s => s.trim()).filter(s => s) : det.insumos;
-                    const insumosHtml = insumoList.map((ins, i) => `<span class="badge-insumo">${ins}<span class="remove-insumo" onclick="removeInsumoItem('${item.id}',${i})">×</span></span>`).join('');
+                if(item.editMode) {
+                    let insumoList = item.customInsumos!==null ? item.customInsumos.split(',').map(s=>s.trim()).filter(s=>s) : det.insumos;
+                    let insumosHtml = insumoList.map((ins,i)=>`<span class="badge-insumo">${ins}<span class="remove-insumo" style="cursor:pointer;margin-left:2px;" onclick="removeInsumoItem('${item.id}',${i})">×</span></span>`).join('');
                     div.innerHTML = `
-                        <div class="orc-item-row1"><span class="orc-item-name">${det.nome}</span><div class="orc-item-actions"><button class="btn-edit-item" title="Salvar" onclick="toggleEditItem('${item.id}')">💾</button><button class="btn-remove-item" title="Remover" onclick="removeServico('${item.id}')">🗑</button></div></div>
-                        <div class="edit-fields"><label>HH (relógio): <input type="text" value="${hoursToClock(item.customHH !== null ? item.customHH : det.hhReal)}" onchange="updateItemCustom('${item.id}','customHH',this.value)"></label><label>Valor Unit: <input type="text" value="${fmtBRL(det.precoUnit)}" onchange="updateItemCustom('${item.id}','customPreco',this.value)"></label><div style="flex:1;min-width:150px;"><label style="font-size:10px;">Insumos:</label><div class="insumo-list">${insumosHtml || '<span style="font-size:10px;color:var(--text-muted);">Nenhum</span>'}</div><div style="display:flex;gap:4px;margin-top:4px;"><input type="text" id="insumo-add-${item.id}" placeholder="Novo insumo" style="flex:1;font-size:10px;padding:3px 6px;"><button class="small-btn btn-sm primary" onclick="addInsumoItem('${item.id}')">+</button></div></div><button class="small-btn btn-sm success" onclick="recalcularValorItem('${item.id}')">Recalc.</button></div>
-                        <div class="orc-item-row2"><div class="qty-controls"><button class="qty-btn" onclick="changeQty('${item.id}',-1)">-</button><span class="qty-val">${item.qty}</span><button class="qty-btn" onclick="changeQty('${item.id}',1)">+</button></div><span>${fmtHH(det.hhReal * item.qty)}</span><span class="orc-item-price">${fmtBRL(det.subtotal)}</span></div>
+                        <div class="orc-item-row1"><span class="orc-item-name">${det.nome}</span><div class="orc-item-actions"><button class="btn-edit-item" onclick="toggleEditItem('${item.id}')">💾</button><button class="btn-remove-item" onclick="removeServico('${item.id}')">🗑</button></div></div>
+                        <div class="edit-fields"><label>HH: <input type="text" value="${hoursToClock(item.customHH!==null?item.customHH:det.hhReal)}" onchange="updateItemCustom('${item.id}','customHH',this.value)"></label><label>Valor Unit: <input type="text" value="${fmtBRL(det.precoUnit)}" onchange="updateItemCustom('${item.id}','customPreco',this.value)"></label><div style="flex:1;"><label>Insumos:</label><div class="insumo-list">${insumosHtml||'<span>Nenhum</span>'}</div><div style="display:flex;gap:4px;margin-top:4px;"><input type="text" id="insumo-add-${item.id}" placeholder="Novo insumo" style="flex:1;font-size:10px;"><button class="small-btn" onclick="addInsumoItem('${item.id}')">+</button></div></div><button class="small-btn" onclick="recalcularValorItem('${item.id}')">Recalc.</button></div>
+                        <div class="orc-item-row2"><div class="qty-controls"><button class="qty-btn" onclick="changeQty('${item.id}',-1)">-</button><span class="qty-val">${item.qty}</span><button class="qty-btn" onclick="changeQty('${item.id}',1)">+</button></div><span>${fmtHH(det.hhReal*item.qty)}</span><span class="orc-item-price">${fmtBRL(det.subtotal)}</span></div>
                     `;
                 } else {
                     div.innerHTML = `
-                        <div class="orc-item-row1"><span class="orc-item-name">${det.nome}</span><div class="orc-item-actions"><button class="btn-edit-item" title="Editar" onclick="toggleEditItem('${item.id}')">✎</button><button class="btn-remove-item" title="Remover" onclick="removeServico('${item.id}')">🗑</button></div></div>
-                        <div class="orc-item-row2"><div class="qty-controls"><button class="qty-btn" onclick="changeQty('${item.id}',-1)">-</button><span class="qty-val">${item.qty}</span><button class="qty-btn" onclick="changeQty('${item.id}',1)">+</button></div><span>${fmtHH(det.hhReal * item.qty)}</span><span class="orc-item-price">${fmtBRL(det.subtotal)}</span></div>
+                        <div class="orc-item-row1"><span class="orc-item-name">${det.nome}</span><div class="orc-item-actions"><button class="btn-edit-item" onclick="toggleEditItem('${item.id}')">✎</button><button class="btn-remove-item" onclick="removeServico('${item.id}')">🗑</button></div></div>
+                        <div class="orc-item-row2"><div class="qty-controls"><button class="qty-btn" onclick="changeQty('${item.id}',-1)">-</button><span class="qty-val">${item.qty}</span><button class="qty-btn" onclick="changeQty('${item.id}',1)">+</button></div><span>${fmtHH(det.hhReal*item.qty)}</span><span class="orc-item-price">${fmtBRL(det.subtotal)}</span></div>
                     `;
                 }
                 container.appendChild(div);
@@ -1959,21 +771,21 @@
             document.getElementById('total-financeiro-orc').innerText = fmtBRL(tFin);
         }
         window.removeInsumoItem = function(id, index) {
-            const item = orcamento.find(o => o.id === id);
-            if (!item) return;
-            const insumos = item.customInsumos !== null ? item.customInsumos.split(',').map(s => s.trim()).filter(s => s) : [];
-            insumos.splice(index, 1);
+            let item = orcamento.find(o=>o.id===id);
+            if(!item) return;
+            let insumos = item.customInsumos!==null ? item.customInsumos.split(',').map(s=>s.trim()).filter(s=>s) : [];
+            insumos.splice(index,1);
             item.customInsumos = insumos.length ? insumos.join(', ') : null;
             renderOrcamento();
         };
         window.addInsumoItem = function(id) {
-            const input = document.getElementById(`insumo-add-${id}`);
-            if (!input) return;
-            const val = input.value.trim();
-            if (!val) return;
-            const item = orcamento.find(o => o.id === id);
-            if (!item) return;
-            const insumos = item.customInsumos !== null ? item.customInsumos.split(',').map(s => s.trim()).filter(s => s) : [];
+            let input = document.getElementById(`insumo-add-${id}`);
+            if(!input) return;
+            let val = input.value.trim();
+            if(!val) return;
+            let item = orcamento.find(o=>o.id===id);
+            if(!item) return;
+            let insumos = item.customInsumos!==null ? item.customInsumos.split(',').map(s=>s.trim()).filter(s=>s) : [];
             insumos.push(val);
             item.customInsumos = insumos.join(', ');
             input.value = '';
@@ -1982,116 +794,216 @@
 
         // ==================== RELATÓRIOS ====================
         function getOrcamentoData() {
-            const vNome = veiculoDetalhes ? `${veiculoDetalhes.Marca} ${veiculoDetalhes.Modelo} (${veiculoDetalhes.AnoModelo})` : 'Não Identificado';
-            const vFipe = veiculoDetalhes ? veiculoDetalhes.Valor : 'N/A', vComb = veiculoDetalhes ? veiculoDetalhes.Combustivel : 'N/A', vCod = veiculoDetalhes ? veiculoDetalhes.CodigoFipe : 'N/A';
-            const rate = parseBRL(document.getElementById('input-hh-rate').value);
-            const perfil = tabelaAtiva === 'verde' ? 'Verde (Normal)' : tabelaAtiva === 'amarela' ? 'Amarela (Frota -20%)' : 'Vermelha (Especial -35%)';
-            const linhas = [];
-            let tHH = 0, tFin = 0;
+            let vNome = veiculoDetalhes ? `${veiculoDetalhes.Marca} ${veiculoDetalhes.Modelo} (${veiculoDetalhes.AnoModelo})` : 'Não Identificado';
+            let vFipe = veiculoDetalhes ? veiculoDetalhes.Valor : 'N/A';
+            let vComb = veiculoDetalhes ? veiculoDetalhes.Combustivel : 'N/A';
+            let vCod = veiculoDetalhes ? veiculoDetalhes.CodigoFipe : 'N/A';
+            let rate = parseBRL(document.getElementById('input-hh-rate').value);
+            let perfil = tabelaAtiva==='verde'?'Verde (Normal)':tabelaAtiva==='amarela'?'Amarela (Frota -20%)':'Vermelha (Especial -35%)';
+            let linhas = [], tHH=0, tFin=0;
             orcamento.forEach(item => {
-                const d = getItemDetails(item);
-                if (d) {
-                    linhas.push({ ...d, qty: item.qty });
-                    tHH += d.hhReal * item.qty;
-                    tFin += d.subtotal;
-                }
+                let d = getItemDetails(item);
+                if(d) { linhas.push({...d, qty:item.qty}); tHH += d.hhReal*item.qty; tFin += d.subtotal; }
             });
             return { vNome, vFipe, vComb, vCod, rate, perfil, linhas, tHH, tFin };
         }
         window.printOrcamento = function() {
-            if (!orcamento.length) { alert('Adicione serviços.'); return; }
-            const d = getOrcamentoData();
-            const linhasHtml = d.linhas.map(l => `
+            if(!orcamento.length){ alert('Adicione serviços.'); return; }
+            let d = getOrcamentoData();
+            let linhasHtml = d.linhas.map(l => `
                 <tr>
-                    <td><strong>${l.id || '-'}</strong></td>
-                    <td><div>${l.nome}</div><div style="font-size:10px;color:#555;">Insumos: ${l.insumos.join(", ") || 'Nenhum'}</div></td>
+                    <td><strong>${l.id||'-'}</strong></td>
+                    <td><div>${l.nome}</div><div style="font-size:10px;">Insumos: ${l.insumos.join(", ")||'Nenhum'}</div></td>
                     <td style="text-align:center">${fmtHH(l.hhReal)}</td>
                     <td style="text-align:center">${l.qty}</td>
                     <td style="text-align:right">${fmtBRL(l.precoUnit)}</td>
                     <td style="text-align:right;font-weight:bold;">${fmtBRL(l.subtotal)}</td>
                 </tr>
             `).join('');
-            const win = window.open("", "_blank");
+            let win = window.open("","_blank");
             win.document.write(`
-                <html><head><title>Orçamento Técnico - ${d.vNome}</title>
-                <style>body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;padding:30px;color:#333;line-height:1.4;}.header{border-bottom:2px solid #0099ff;padding-bottom:15px;margin-bottom:25px;display:flex;justify-content:space-between;}h2{margin:0;color:#2c3e50;font-size:26px;}.meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;background:#f8f9fa;padding:15px;border-radius:6px;margin-bottom:25px;font-size:13px;}table{width:100%;border-collapse:collapse;margin-top:10px;}th{background:#2c3e50;color:#fff;padding:10px;font-size:11px;text-transform:uppercase;text-align:left;}td{padding:10px;border-bottom:1px solid #ddd;font-size:12px;}.totais-box{float:right;width:300px;margin-top:25px;background:#e6f5ff;padding:15px;border-radius:6px;font-size:14px;}.totais-row{display:flex;justify-content:space-between;margin-bottom:6px;}</style>
+                <html><head><title>Orçamento - ${d.vNome}</title>
+                <style>body{font-family:Helvetica,Arial;padding:30px;} .header{border-bottom:2px solid #0099ff;margin-bottom:25px;} .meta-grid{display:grid;grid-template-columns:1fr 1fr;background:#f8f9fa;padding:15px;border-radius:6px;margin-bottom:25px;} table{width:100%;border-collapse:collapse;} th{background:#2c3e50;color:#fff;padding:8px;} td{padding:8px;border-bottom:1px solid #ddd;} .totais-box{float:right;width:300px;background:#e6f5ff;padding:15px;margin-top:25px;}</style>
                 </head><body>
-                <div class="header"><div><h2>HoraDoMecânico</h2><div style="font-size:12px;color:#7f8c8d;">Orçamento Técnico de Mão de Obra</div></div><div style="font-size:12px;text-align:right;">Data: ${new Date().toLocaleDateString('pt-BR')}<br>Cód FIPE: ${d.vCod}</div></div>
-                <div class="meta-grid"><div><strong>Dados do Veículo</strong><br>Modelo: ${d.vNome}<br>Combustível: ${d.vComb}<br>Valor Ref. FIPE: ${d.vFipe}</div><div><strong>Parâmetros</strong><br>Perfil: ${d.perfil}<br>Taxa Base HH: ${fmtBRL(d.rate)}/h</div></div>
-                <table><thead><tr><th>Cód</th><th>Mão de Obra / Peças</th><th>HH Unit</th><th>Qtd</th><th>Valor Unit</th><th>Subtotal</th></tr></thead><tbody>${linhasHtml}</tbody></table>
-                <div class="totais-box"><div class="totais-row"><span>Carga Horária:</span><strong>${fmtHH(d.tHH)}</strong></div><div class="totais-row" style="border-top:1px solid #b3e0ff;margin-top:8px;padding-top:8px;font-size:16px;"><span>Total Geral:</span><strong>${fmtBRL(d.tFin)}</strong></div></div>
+                <div class="header"><h2>HoraDoMecânico</h2><div>Orçamento Técnico</div></div>
+                <div class="meta-grid"><div><strong>Veículo:</strong> ${d.vNome}<br>FIPE: ${d.vCod}<br>Combustível: ${d.vComb}<br>Valor FIPE: ${d.vFipe}</div><div><strong>Parâmetros:</strong> ${d.perfil}<br>Taxa HH: ${fmtBRL(d.rate)}/h</div></div>
+                <table><thead><tr><th>Cód</th><th>Serviço</th><th>HH Unit</th><th>Qtd</th><th>Unitário</th><th>Subtotal</th></tr></thead><tbody>${linhasHtml}</tbody></table>
+                <div class="totais-box"><div>Tempo Total: ${fmtHH(d.tHH)}</div><div><strong>Total Geral: ${fmtBRL(d.tFin)}</strong></div></div>
                 </body></html>
             `);
             win.document.close();
             win.print();
         };
         window.downloadPDF = function() {
-            if (!orcamento.length) { alert('Adicione serviços.'); return; }
-            const d = getOrcamentoData();
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            doc.setFontSize(18); doc.text('HoraDoMecânico', 15, 20);
-            doc.setFontSize(10); doc.text(`Orçamento - ${d.vNome} | FIPE: ${d.vCod}`, 15, 28);
-            doc.text(`Perfil: ${d.perfil} | Taxa HH: ${fmtBRL(d.rate)}/h`, 15, 34);
-            let y = 44;
-            d.linhas.forEach(l => {
-                doc.text(`${l.nome} (${fmtHH(l.hhReal)}) x${l.qty} = ${fmtBRL(l.subtotal)}`, 15, y);
-                y += 7;
-                if (l.insumos.length) {
-                    doc.setFontSize(7);
-                    doc.text(`Insumos: ${l.insumos.join(', ')}`, 20, y);
-                    y += 5;
-                    doc.setFontSize(10);
-                }
+            if(!orcamento.length){ alert('Adicione serviços.'); return; }
+            let d = getOrcamentoData();
+            let { jsPDF } = window.jspdf;
+            let doc = new jsPDF();
+            doc.setFontSize(18); doc.text('HoraDoMecânico',15,20);
+            doc.setFontSize(10); doc.text(`Orçamento - ${d.vNome} | FIPE: ${d.vCod}`,15,28);
+            doc.text(`Perfil: ${d.perfil} | Taxa HH: ${fmtBRL(d.rate)}/h`,15,34);
+            let y=44;
+            d.linhas.forEach(l=>{
+                doc.text(`${l.nome} (${fmtHH(l.hhReal)}) x${l.qty} = ${fmtBRL(l.subtotal)}`,15,y);
+                y+=7;
+                if(l.insumos.length){ doc.setFontSize(7); doc.text(`Insumos: ${l.insumos.join(', ')}`,20,y); y+=5; doc.setFontSize(10); }
             });
-            doc.text(`Total: ${fmtBRL(d.tFin)} | Tempo: ${fmtHH(d.tHH)}`, 15, y + 5);
-            doc.save(`orcamento_${d.vNome.replace(/\s+/g, '_')}.pdf`);
+            doc.text(`Total: ${fmtBRL(d.tFin)} | Tempo: ${fmtHH(d.tHH)}`,15,y+5);
+            doc.save(`orcamento_${d.vNome.replace(/\s+/g,'_')}.pdf`);
         };
         window.shareWhatsApp = function() {
-            if (!orcamento.length) { alert('Adicione serviços.'); return; }
-            const d = getOrcamentoData();
+            if(!orcamento.length){ alert('Adicione serviços.'); return; }
+            let d = getOrcamentoData();
             let txt = `*HoraDoMecânico - Orçamento*\n\n*Veículo:* ${d.vNome}\n*FIPE:* ${d.vCod}\n*Perfil:* ${d.perfil}\n\n`;
-            d.linhas.forEach(l => txt += `• ${l.nome} (${fmtHH(l.hhReal)}) x${l.qty} = ${fmtBRL(l.subtotal)}\n`);
+            d.linhas.forEach(l=> txt += `• ${l.nome} (${fmtHH(l.hhReal)}) x${l.qty} = ${fmtBRL(l.subtotal)}\n`);
             txt += `\n*Total:* ${fmtBRL(d.tFin)}\n*Tempo:* ${fmtHH(d.tHH)}`;
-            window.open(`https://wa.me/?text=${encodeURIComponent(txt)}`, '_blank');
+            window.open(`https://wa.me/?text=${encodeURIComponent(txt)}`,'_blank');
         };
 
-        // ==================== INICIALIZAÇÃO ====================
-        function toggleSocialDrawer() {
-            const d = document.getElementById('social-drawer'), o = document.getElementById('social-drawer-overlay');
-            const open = d.classList.contains('open');
-            if (open) { d.classList.remove('open'); o.style.display = 'none'; }
-            else { d.classList.add('open'); o.style.display = 'block'; }
+        // ==================== ADMIN (SERVIÇOS NO SUPABASE) ====================
+        let adminFipeCode = null;
+        let adminTipo = 'carros';
+        let adminMarca=null, adminModelo=null, adminAno=null;
+        let adminMarcasData=[], adminModelosData=[], adminAnosData=[];
+
+        async function setAdminTipo(tipo, btn) {
+            adminTipo = tipo;
+            document.querySelectorAll('#admin-tipo-selector .btn-tipo-veiculo').forEach(b=>b.classList.remove('active'));
+            btn.classList.add('active');
+            adminMarca=null; adminModelo=null; adminAno=null; adminFipeCode=null;
+            document.getElementById('admin-label-marca').innerText='Selecionar Marca...';
+            document.getElementById('admin-label-modelo').innerText='—';
+            document.getElementById('admin-label-ano').innerText='—';
+            document.getElementById('admin-btn-modelo').disabled=true;
+            document.getElementById('admin-btn-ano').disabled=true;
+            await adminLoadMarcas();
         }
-        function openAdminPanel() { document.getElementById('admin-overlay').style.display = 'flex'; renderAdminUsers(); setAdminTipo(adminTipo, document.querySelector('#admin-tipo-selector .btn-tipo-veiculo.active')); }
-        function closeAdminPanel() { document.getElementById('admin-overlay').style.display = 'none'; }
+        function adminApiBase() { return `https://parallelum.com.br/fipe/api/v1/${adminTipo}`; }
+        async function adminLoadMarcas() { let r=await fetch(`${adminApiBase()}/marcas`); adminMarcasData=await r.json(); adminPopulateDropdown('marca',adminMarcasData); }
+        async function adminLoadModelos(marcaId) { let r=await fetch(`${adminApiBase()}/marcas/${marcaId}/modelos`); let d=await r.json(); adminModelosData=d.modelos; adminPopulateDropdown('modelo',adminModelosData); document.getElementById('admin-btn-modelo').disabled=false; }
+        async function adminLoadAnos(marcaId, modeloId) { let r=await fetch(`${adminApiBase()}/marcas/${marcaId}/modelos/${modeloId}/anos`); adminAnosData=await r.json(); adminPopulateDropdown('ano',adminAnosData); document.getElementById('admin-btn-ano').disabled=false; }
+        async function adminLoadVeiculoDetalhes(marcaId, modeloId, anoId) { let r=await fetch(`${adminApiBase()}/marcas/${marcaId}/modelos/${modeloId}/anos/${anoId}`); let d=await r.json(); adminFipeCode=d.CodigoFipe; document.getElementById('admin-fipe-display').innerText=adminFipeCode; renderAdminServicosVeiculo(); }
+        function adminPopulateDropdown(type, list) {
+            let container=document.getElementById(`admin-options-${type}`);
+            container.innerHTML='';
+            list.forEach(item=>{
+                let btn=document.createElement('button');
+                btn.className='dropdown-option';
+                btn.innerText=item.nome;
+                btn.onclick=()=>adminSelectOption(type,item.codigo,item.nome);
+                container.appendChild(btn);
+            });
+        }
+        window.adminFilterOptions = function(type,q) {
+            let list=type==='marca'?adminMarcasData:type==='modelo'?adminModelosData:adminAnosData;
+            adminPopulateDropdown(type,list.filter(i=>i.nome.toLowerCase().includes(q.toLowerCase())));
+        };
+        window.toggleAdminDropdown = function(type) {
+            let el=document.getElementById(`admin-drop-${type}`);
+            let vis=el.style.display==='flex';
+            document.querySelectorAll('#admin-modal .dropdown-menu').forEach(m=>m.style.display='none');
+            if(!vis) el.style.display='flex';
+        };
+        function adminSelectOption(type,codigo,nome) {
+            document.getElementById(`admin-label-${type}`).innerText=nome;
+            document.querySelectorAll('#admin-modal .dropdown-menu').forEach(m=>m.style.display='none');
+            if(type==='marca'){ adminMarca={codigo,nome}; adminModelo=null; adminAno=null; adminFipeCode=null; document.getElementById('admin-btn-modelo').disabled=true; document.getElementById('admin-btn-ano').disabled=true; document.getElementById('admin-label-modelo').innerText='—'; document.getElementById('admin-label-ano').innerText='—'; adminLoadModelos(codigo); }
+            else if(type==='modelo'){ adminModelo={codigo,nome}; adminAno=null; adminFipeCode=null; document.getElementById('admin-btn-ano').disabled=true; document.getElementById('admin-label-ano').innerText='—'; adminLoadAnos(adminMarca.codigo,codigo); }
+            else if(type==='ano'){ adminAno={codigo,nome}; adminLoadVeiculoDetalhes(adminMarca.codigo,adminModelo.codigo,codigo); }
+        }
+
+        async function renderAdminServicosVeiculo() {
+            if(!adminFipeCode){ document.getElementById('admin-servicos-veiculo-tbody').innerHTML='<tr><td colspan="4">Selecione um veículo.</td></tr>'; return; }
+            let { data: servicos, error } = await supabase.from('servicos_veiculo').select('*').eq('fipe_code', adminFipeCode);
+            if(error) return;
+            let tbody = document.getElementById('admin-servicos-veiculo-tbody');
+            tbody.innerHTML = servicos.map(s => `
+                <tr>
+                    <td>${s.servico_nome}</td>
+                    <td>${hoursToClock(s.hh)}h</td>
+                    <td>${(s.pecas||[]).join(', ')}</td>
+                    <td><button class="btn-sm danger" onclick="adminRemoveServico('${s.id}')">✕</button></td>
+                </tr>
+            `).join('');
+        }
+
+        window.adminAddSingleServico = async function() {
+            if(!adminFipeCode){ alert('Selecione um veículo primeiro.'); return; }
+            let nome = document.getElementById('admin-servico-nome').value.trim();
+            let hhStr = document.getElementById('admin-servico-hh').value.trim();
+            let insumosStr = document.getElementById('admin-servico-insumos').value.trim();
+            let hh = parseClockToHours(hhStr);
+            if(!nome || isNaN(hh) || hh<=0){ alert('Nome e HH válidos.'); return; }
+            let pecas = insumosStr ? insumosStr.split(',').map(s=>s.trim()).filter(s=>s) : [];
+            let { error } = await supabase.from('servicos_veiculo').insert([{ fipe_code: adminFipeCode, servico_nome: nome, hh: hh, pecas: pecas }]);
+            if(error){ alert('Erro: '+error.message); return; }
+            document.getElementById('admin-servico-nome').value='';
+            document.getElementById('admin-servico-hh').value='';
+            document.getElementById('admin-servico-insumos').value='';
+            renderAdminServicosVeiculo();
+            if(veiculoDetalhes && veiculoDetalhes.CodigoFipe === adminFipeCode) processarServicosFiltrados();
+        };
+
+        window.adminAddBulkServicos = async function() {
+            if(!adminFipeCode){ alert('Selecione um veículo.'); return; }
+            let raw = document.getElementById('admin-servico-bulk').value.trim();
+            if(!raw) return;
+            let lines = raw.split('\n').filter(l=>l.trim());
+            let added = 0;
+            for(let line of lines){
+                let parts = line.split(',').map(s=>s.trim());
+                let nome = parts[0];
+                let hhStr = parts[1]||'';
+                let hh = parseClockToHours(hhStr);
+                let pecas = parts.slice(2).filter(p=>p);
+                if(nome && !isNaN(hh) && hh>0){
+                    await supabase.from('servicos_veiculo').insert([{ fipe_code: adminFipeCode, servico_nome: nome, hh: hh, pecas: pecas }]);
+                    added++;
+                }
+            }
+            document.getElementById('admin-servico-bulk').value='';
+            renderAdminServicosVeiculo();
+            if(veiculoDetalhes && veiculoDetalhes.CodigoFipe === adminFipeCode) processarServicosFiltrados();
+            if(added===0 && lines.length>0) alert('Nenhum serviço válido.');
+        };
+
+        window.adminRemoveServico = async function(servicoId) {
+            await supabase.from('servicos_veiculo').delete().eq('id', servicoId);
+            renderAdminServicosVeiculo();
+            if(veiculoDetalhes && veiculoDetalhes.CodigoFipe === adminFipeCode) processarServicosFiltrados();
+        };
+
+        // ==================== MENUS E INICIALIZAÇÃO ====================
+        function toggleSocialDrawer() {
+            let d = document.getElementById('social-drawer'), o = document.getElementById('social-drawer-overlay');
+            let open = d.classList.contains('open');
+            if(open){ d.classList.remove('open'); o.style.display='none'; }
+            else{ d.classList.add('open'); o.style.display='block'; }
+        }
+        function openAdminPanel() { document.getElementById('admin-overlay').style.display='flex'; setAdminTipo(adminTipo, document.querySelector('#admin-tipo-selector .btn-tipo-veiculo.active')); }
+        function closeAdminPanel() { document.getElementById('admin-overlay').style.display='none'; }
 
         window.addEventListener('DOMContentLoaded', async () => {
-            updateUIForUser();
             await loadMarcas();
             await processarServicosFiltrados();
             setupInfiniteScroll();
-            document.addEventListener('click', e => { if (!e.target.closest('.search-select-container')) closeAllDropdowns(); });
-            document.getElementById('admin-overlay').addEventListener('click', function(e) { if (e.target === this) closeAdminPanel(); });
-            // Inicializar admin se logado como admin
-            if (currentUser && currentUser.tipo === 'admin') {
-                await setAdminTipo('carros', document.querySelector('#admin-tipo-selector .btn-tipo-veiculo'));
-            }
-            // Botão extra de imagem (opcional)
-            const footer = document.querySelector('.sidebar-footer');
-            const btnImg = document.createElement('button');
+            document.addEventListener('click', e => { if(!e.target.closest('.search-select-container')) closeAllDropdowns(); });
+            document.getElementById('admin-overlay').addEventListener('click', function(e){ if(e.target===this) closeAdminPanel(); });
+            // Botão extra para imagem do orçamento
+            let footer = document.querySelector('.sidebar-footer');
+            let btnImg = document.createElement('button');
             btnImg.className = 'btn-download-pdf';
             btnImg.style.background = '#8e44ad';
-            btnImg.innerHTML = '🖼 Gerar Imagem do Orçamento';
+            btnImg.innerHTML = '🖼 Gerar Imagem';
             btnImg.onclick = async () => {
-                const sidebar = document.getElementById('orcamento-sidebar');
-                const canvas = await html2canvas(sidebar, { backgroundColor: '#fff', scale: 2 });
-                const a = document.createElement('a');
+                let sidebar = document.getElementById('orcamento-sidebar');
+                let canvas = await html2canvas(sidebar, { backgroundColor:'#fff', scale:2 });
+                let a = document.createElement('a');
                 a.download = `orcamento_${Date.now()}.png`;
                 a.href = canvas.toDataURL('image/png');
                 a.click();
             };
-            footer.insertBefore(btnImg, footer.children[footer.children.length - 1]);
+            footer.insertBefore(btnImg, footer.children[footer.children.length-1]);
         });
     </script>
 </body>
